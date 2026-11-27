@@ -1,0 +1,1183 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#061C2C">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<title>La Rose</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Tajawal:wght@400;500;700&display=swap">
+<style>
+/* Concept: a night-sea blue notebook. One big double ring (blue = today, cream = week) over a day split into prayer-time sections. */
+:root{
+  --bg:#EDF1F5; --card:#FBF8F2; --card2:#E4EBF1; --fg:#193347; --mute:#4F6478; --line:#CBD6E0;
+  --ring-day:#334B60; --ring-week:#D2BC8A; --track:#D8E1E9; --accent:#B46A72; --blush:#F7C8D3; --on-accent:#FFF7E6; --ok:#4E7D6B; --water:#4F7FA3;
+  --font-display:"Aref Ruqaa","Amiri","Noto Naskh Arabic",serif; --font-body:"Tajawal","Segoe UI",Tahoma,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#061C2C; --card:#193347; --card2:#102A3D; --fg:#F4EFE4; --mute:#A9B8C7; --line:#334B60;
+  --ring-day:#B7C7D6; --ring-week:#F1E4C6; --track:#26405A; --accent:#F7C8D3; --blush:#F7C8D3; --on-accent:#061C2C; --ok:#9CC5AE; --water:#8DB6D6; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#061C2C; --card:#193347; --card2:#102A3D; --fg:#F4EFE4; --mute:#A9B8C7; --line:#334B60;
+  --ring-day:#B7C7D6; --ring-week:#F1E4C6; --track:#26405A; --accent:#F7C8D3; --blush:#F7C8D3; --on-accent:#061C2C; --ok:#9CC5AE; --water:#8DB6D6; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:16px;line-height:1.55;padding-block:0 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:30}
+#app{max-width:560px;margin:0 auto}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);display:flex;align-items:center;gap:10px;padding:12px 0 8px}
+.top h1{margin:0;font-family:var(--font-body);font-size:28px;line-height:1;flex:1;font-weight:700;letter-spacing:.02em}
+.top h1.brand{font-family:var(--font-display)}
+.top h1 small{display:block;font-family:var(--font-body);font-size:13px;font-weight:400;color:var(--mute);letter-spacing:0;margin-top:4px}
+.ib{width:42px;height:42px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center}
+.tabs{display:flex;gap:6px;background:var(--card2);padding:4px;border-radius:999px;margin:6px 0 14px}
+.tabs button{flex:1;padding:8px 6px;border-radius:999px;color:var(--mute);font-weight:500}
+.tabs button[aria-selected="true"]{background:var(--card);color:var(--fg);box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.hero{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:center}
+.ringwrap{position:relative;width:176px;height:176px;flex:none}
+.ringwrap svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ringwrap .c{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.ringwrap .c b{font-size:38px;line-height:1;font-variant-numeric:tabular-nums}
+.ringwrap .c span{font-size:12px;color:var(--mute)}
+.legend{display:grid;gap:10px;min-width:0;flex:1 1 140px}
+.legend div{display:flex;align-items:center;gap:8px;font-size:14px}
+.dot{width:12px;height:12px;border-radius:50%;flex:none}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.pill{padding:13px 10px;border-radius:16px;background:var(--card);border:1px solid var(--line);font-weight:700;direction:ltr;text-align:center}
+.pill.on{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.pill small{display:block;font-weight:400;font-size:12px;direction:rtl;opacity:.85}
+.sec{background:var(--card);border:1px solid var(--line);border-radius:18px;margin:10px 0;overflow:hidden}
+.sec>header{display:flex;align-items:baseline;justify-content:space-between;padding:12px 16px 4px}
+.sec>header h2{margin:0;font-size:17px;font-weight:700}
+.sec>header span{font-size:12.5px;color:var(--mute);font-variant-numeric:tabular-nums}
+.row{display:flex;align-items:center;gap:12px;padding:10px 16px;min-height:48px;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:0}
+.row .t{flex:1;min-width:0}
+.row .t small{display:block;color:var(--mute);font-size:12.5px}
+.row.now{background:var(--track)}
+.row.tap{cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.chk{width:32px;height:32px;border-radius:50%;border:2px solid var(--ring-day);flex:none;display:grid;place-items:center;color:var(--on-accent);background:transparent}
+.row.done .chk{background:var(--ok);border-color:var(--ok)}
+.row.done .t{text-decoration:line-through;color:var(--mute)}
+.btn{padding:8px 14px;border-radius:999px;background:var(--accent);color:var(--on-accent);font-weight:700;font-size:14px}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--fg)}
+.late{color:var(--accent);font-weight:700;font-variant-numeric:tabular-nums}
+.qrow{padding:10px 16px 14px;border-top:1px solid var(--line)}
+.qrow .qh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.qrow output{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--accent)}
+input[type=range]{width:100%;accent-color:var(--accent);direction:ltr}
+input,textarea,select{direction:rtl;text-align:right}
+input[type=number],input[type=text],textarea,select{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+textarea{min-height:110px;resize:vertical}
+.stack{display:grid;gap:8px;padding:10px 16px 14px}
+.stack .two{display:grid;grid-template-columns:1fr auto;gap:8px}
+.muted{color:var(--mute);font-size:13.5px}
+.note{margin:14px 0;padding:12px 14px;border-radius:14px;background:var(--card2);color:var(--mute);font-size:13.5px}
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:10px 0}
+.wd{display:grid;justify-items:center;gap:4px;font-size:12px;color:var(--mute);padding:8px 0;border-radius:12px}
+.wd.today{background:var(--card);border:1px solid var(--line);color:var(--fg)}
+.wd svg{width:38px;height:38px;transform:rotate(-90deg)}
+.stat{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:10px 0}
+.stat div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+.stat b{display:block;font-size:26px;font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;color:var(--mute)}
+.tier{border-radius:16px;padding:14px;background:var(--card);border:1px solid var(--line);margin:10px 0}
+.scrim{position:fixed;inset:0;background:rgba(3,14,24,.55);z-index:40}
+.drawer{position:fixed;top:0;bottom:0;right:0;width:min(300px,84vw);background:var(--card);z-index:50;padding:calc(env(safe-area-inset-top,0px) + 18px) 18px 24px;padding-right:max(18px,env(safe-area-inset-right,0px));overflow:auto;border-left:1px solid var(--line)}
+.drawer h2{font-family:var(--font-display);font-size:26px;margin:0 0 12px}
+.drawer button.m{display:block;width:100%;text-align:start;padding:12px 10px;border-radius:12px;font-weight:500}
+.drawer button.m:hover{background:var(--card2)}
+.drawer .live{color:var(--ok);font-size:12px;margin-inline-start:6px}
+.chat{display:grid;gap:8px;margin:10px 0}
+.msg{max-width:88%;padding:10px 13px;border-radius:16px;white-space:pre-wrap;overflow-wrap:anywhere}
+.msg.u{justify-self:start;background:var(--card2)}
+.msg.a{justify-self:end;background:var(--card);border:1px solid var(--line)}
+.entry{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:8px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.entry small{display:block;color:var(--mute);margin-bottom:4px}
+.form{display:flex;gap:8px;align-items:flex-end}
+.form>*{min-width:0}
+.water{padding:4px 16px 16px;text-align:center}
+.wtitle{font-family:var(--font-display);font-size:26px;color:var(--water);line-height:1.1}
+.wstem{width:2px;height:14px;background:var(--water);opacity:.55;margin:2px auto 0}
+.wrow{display:grid;grid-template-columns:repeat(4,1fr);position:relative}
+.wrow::before{content:"";position:absolute;top:0;left:12.5%;right:12.5%;height:2px;background:var(--water);opacity:.55}
+.wb{display:grid;justify-items:center;padding-top:12px;position:relative}
+.wb::before{content:"";position:absolute;top:0;width:2px;height:12px;background:var(--water);opacity:.55}
+.wc{width:62px;height:62px;border-radius:50%;border:2.5px solid var(--water);display:grid;place-items:center;font-weight:700;font-size:14px;color:var(--water);background:var(--card);direction:ltr;transition:background .2s}
+.wc.on{background:var(--water);color:var(--card)}
+.dmonth{color:var(--mute);font-size:13px;margin:16px 4px 0}
+.dcard{display:block;width:100%;text-align:right;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 16px;margin:10px 0}
+.dh{display:flex;align-items:flex-end;gap:8px;margin-bottom:8px;color:var(--mute);font-size:14px}
+.dnum{font-size:30px;font-weight:700;line-height:1;color:var(--fg);border-bottom:4px solid var(--ring-day);padding-bottom:2px}
+.dt{font-weight:700;font-size:17px;overflow-wrap:anywhere}
+.dp{color:var(--mute);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-line;overflow-wrap:anywhere}
+.fab{position:fixed;bottom:calc(env(safe-area-inset-bottom,0px) + 22px);left:50%;transform:translateX(-50%);width:64px;height:64px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;z-index:25;box-shadow:0 6px 18px rgba(0,0,0,.28)}
+.etitle{font-size:20px;font-weight:700;background:transparent!important;border:0!important;border-bottom:1px solid var(--line)!important;border-radius:0!important;padding:10px 2px!important}
+.ebody{min-height:52vh;background:transparent!important;border:0!important;padding:12px 2px!important;line-height:1.9;font-size:17px;resize:none}
+.splash{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-content:center;justify-items:center;gap:10px;transition:opacity .6s}
+.splash.off{opacity:0;pointer-events:none}
+.splash h1{font-family:var(--font-display);font-size:40px;margin:0}
+h3{margin:18px 0 6px;font-size:16px}
+label.f{display:grid;gap:4px;margin:10px 0;font-size:14px;color:var(--mute)}
+.switch{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0}
+@media (prefers-reduced-motion:reduce){.splash{transition:none}}
+.bignum{font-size:64px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums;color:var(--accent);margin:10px 0}
+.bigbtn{width:170px;height:170px;border-radius:50%;background:var(--accent);color:var(--on-accent);font-size:22px;font-weight:700;box-shadow:0 6px 18px rgba(0,0,0,.22);touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.bigbtn:active{transform:scale(.97)}
+.hadith{font-size:19px;line-height:2;margin-top:8px;overflow-wrap:anywhere}
+.pbar{height:10px;border-radius:999px;background:var(--track);overflow:hidden;margin-top:8px}
+.pbar i{display:block;height:100%;width:0;background:var(--ring-day);border-radius:999px}
+button:disabled{opacity:.45;cursor:default}
+</style></head><body>
+
+<div id="app"></div>
+<div id="splash" class="splash" role="presentation">
+  <svg width="170" height="170" viewBox="0 0 170 170" aria-hidden="true">
+    <circle cx="85" cy="85" r="80" fill="none" stroke="var(--track)" stroke-width="6"/>
+    <circle cx="85" cy="85" r="80" fill="none" stroke="var(--ring-week)" stroke-width="6" stroke-linecap="round" stroke-dasharray="360 600"/>
+    <circle cx="85" cy="85" r="64" fill="none" stroke="var(--ring-day)" stroke-width="6" stroke-linecap="round" stroke-dasharray="250 600"/>
+    <g transform="translate(85 85)" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round">
+      <path d="M0-4c5-2 9 2 7 7-2 5-9 6-13 1-4-5-1-13 6-14 8-1 15 6 13 15-2 9-12 14-20 10"/>
+      <path d="M-18 14c-9-6-10-20-2-27 8-8 22-6 28 3" opacity=".7"/>
+      <path d="M0 26c8 0 16-3 20-9" opacity=".5"/>
+    </g>
+  </svg>
+  <h1>La Rose</h1>
+</div>
+
+<script>
+(function(){
+"use strict";
+/* ---------- constants ---------- */
+var DAYNAMES=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+var SUBJ=['جبر','ميكانيك هندسي 1','مقاومة','مساحة','ميكانيك موائع','جيولوجيا','إنجليزي مهندسين'];
+var PNAMES={fajr:'الفجر',dhuhr:'الظهر',asr:'العصر',maghrib:'المغرب',isha:'العشاء'};
+var LAT=33.5138,LNG=36.2765,TZ=3;
+
+/* ---------- state ---------- */
+var S={days:{},tasks:[],diary:[],chat:[],theme:'auto',rest:false,reward100:'',reward75:'',cname:'رفيقتي',az:{names:[],m:{}},had:{used:[],notes:{}},char:[],q:{mem:{},notes:{},rev:{},drawn:[]},log:[],tl:{books:{},open:{},used:[],draw:null,sessions:[],rest:{},days:[5,0]},food:{lists:{b:[],s:[],d:[]},used:{b:[],s:[],d:[]},w:{}},glow:{done:{},photo:'',photoK:''},per:{h:'',cyc:[],len:28}};
+var loaded=false,ref=null,saveT=null,view='today',drawer=false,sampleFn=null,dict=null;
+
+function dnow(){return new Date(Date.now()+TZ*3600e3)}
+function keyOf(d){return d.getUTCFullYear()+'-'+String(d.getUTCMonth()+1).padStart(2,'0')+'-'+String(d.getUTCDate()).padStart(2,'0')}
+function day(k){
+  var d=S.days[k];if(!d||typeof d!=='object')d=S.days[k]={};
+  if(!d.done||typeof d.done!=='object')d.done={};
+  if(!d.prayer||typeof d.prayer!=='object')d.prayer={};
+  d.qiyam=+d.qiyam||0;d.walk=+d.walk||0;d.water=+d.water||0;
+  if(d.wake===undefined)d.wake=null;if(d.sleep===undefined)d.sleep=null;
+  return d}
+function norm(){
+  if(!S.days||typeof S.days!=='object')S.days={};
+  Object.keys(S.days).forEach(day);
+  ['tasks','diary','chat'].forEach(function(k){if(!Array.isArray(S[k]))S[k]=[]});
+  S.diary.forEach(function(e,i){if(!e.id)e.id=e.t||Date.now()+i;if(e.title==null)e.title=''});
+  if(!S.az||typeof S.az!=='object')S.az={};if(!Array.isArray(S.az.names))S.az.names=[];if(!S.az.m||typeof S.az.m!=='object')S.az.m={};
+  if(!S.had||typeof S.had!=='object')S.had={};if(!Array.isArray(S.had.used))S.had.used=[];if(!S.had.notes||typeof S.had.notes!=='object')S.had.notes={};
+  if(!Array.isArray(S.char))S.char=[];if(!Array.isArray(S.log))S.log=[];
+  if(!S.tl||typeof S.tl!=='object')S.tl={};var T=S.tl;if(!T.books||typeof T.books!=='object')T.books={};if(!T.open||typeof T.open!=='object')T.open={};if(!T.rest||typeof T.rest!=='object')T.rest={};if(!Array.isArray(T.used))T.used=[];if(!Array.isArray(T.sessions))T.sessions=[];if(!Array.isArray(T.days))T.days=[5,0];
+  if(!S.food||typeof S.food!=='object')S.food={};var F=S.food;if(!F.lists||typeof F.lists!=='object')F.lists={};if(!F.used||typeof F.used!=='object')F.used={};if(!F.w||typeof F.w!=='object')F.w={};['b','s','d'].forEach(function(c){if(!Array.isArray(F.lists[c]))F.lists[c]=[];if(!Array.isArray(F.used[c]))F.used[c]=[]});
+  if(!S.glow||typeof S.glow!=='object')S.glow={};var G=S.glow;if(!G.done||typeof G.done!=='object')G.done={};var GD=glowDefaults();if(!Array.isArray(G.goals)){G.goals=GD.goals;G.done={}}if(!G.daily||typeof G.daily!=='object')G.daily=GD.daily;if(!Array.isArray(G.week)||G.week.length!==7)G.week=GD.week;if(!Array.isArray(G.monthly))G.monthly=[];
+  if(!S.per||typeof S.per!=='object')S.per={};var PR=S.per;if(!Array.isArray(PR.cyc))PR.cyc=[];if(typeof PR.h!=='string')PR.h='';if(!PR.len)PR.len=28;
+  if(!S.q||typeof S.q!=='object')S.q={};['mem','notes','rev'].forEach(function(k){if(!S.q[k]||typeof S.q[k]!=='object')S.q[k]={}});if(!Array.isArray(S.q.drawn))S.q.drawn=[];
+}
+function save(){
+  try{localStorage.setItem('larose',JSON.stringify(S))}catch(e){}
+  if(!loaded||!ref)return;
+  clearTimeout(saveT);
+  saveT=setTimeout(function(){
+    var keys=Object.keys(S.days).sort();while(keys.length>90)delete S.days[keys.shift()];
+    S.diary=S.diary.slice(0,300);S.chat=S.chat.slice(-40);
+    ref.set(JSON.parse(JSON.stringify(S))).catch(function(){});
+  },700);
+}
+
+/* ---------- prayer times (Damascus, approximate) ---------- */
+function rad(d){return d*Math.PI/180}function deg(r){return r*180/Math.PI}
+function fixA(a){a=a%360;return a<0?a+360:a}function fixH(h){h=h%24;return h<0?h+24:h}
+function julian(y,m,d){if(m<=2){y-=1;m+=12}var A=Math.floor(y/100),B=2-A+Math.floor(A/4);return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+d+B-1524.5}
+function ptimes(y,m,d){
+  var jd=julian(y,m,d)-LNG/360+0.5,D=jd-2451545;
+  var g=fixA(357.529+0.98560028*D),q=fixA(280.459+0.98564736*D);
+  var L=fixA(q+1.915*Math.sin(rad(g))+0.020*Math.sin(rad(2*g)));
+  var e=23.439-0.00000036*D;
+  var RA=fixH(deg(Math.atan2(Math.cos(rad(e))*Math.sin(rad(L)),Math.cos(rad(L))))/15);
+  var decl=deg(Math.asin(Math.sin(rad(e))*Math.sin(rad(L))));
+  var mid=fixH(12-(q/15-RA));
+  function z(a){return deg(Math.acos((-Math.sin(rad(a))-Math.sin(rad(LAT))*Math.sin(rad(decl)))/(Math.cos(rad(LAT))*Math.cos(rad(decl)))))/15}
+  var asrA=-deg(Math.atan(1/(1+Math.tan(rad(Math.abs(LAT-decl))))));
+  var adj=TZ-LNG/15;
+  function ms(h){return Date.UTC(y,m-1,d)+(h+adj-TZ)*3600e3}
+  return {fajr:ms(mid-z(18)),sunrise:ms(mid-z(0.833)),dhuhr:ms(mid+1/60),asr:ms(mid+z(asrA)),maghrib:ms(mid+z(0.833)),isha:ms(mid+z(17))};
+}
+function fmt(ms){var d=new Date(ms+TZ*3600e3);return String(d.getUTCHours()).padStart(2,'0')+':'+String(d.getUTCMinutes()).padStart(2,'0')}
+function timesFor(dt){return ptimes(dt.getUTCFullYear(),dt.getUTCMonth()+1,dt.getUTCDate())}
+
+/* ---------- habits ---------- */
+function habitsFor(dow,key){
+  var rest=S.rest,P=function(k){return rest?null:{id:'p_'+k,type:'prayer',key:k,label:'صلاة '+PNAMES[k]}};
+  var wake=[{id:'azkar_wake',label:'أذكار الاستيقاظ'},{id:'qiyam',type:'qiyam',label:'قيام الليل'},{id:'study',label:'ساعة دراسة',sub:'مادة اليوم: '+SUBJ[dow]}];
+  if(dow===0)wake.push({id:'talab',go:'talab',label:'رحلة طلب العلم',sub:'بعد ساعة الدراسة'});
+  var dhuhr=[P('dhuhr'),(S.food&&S.food.w[weekStartOf(key||keyOf(dnow()))]||{}).s?{id:'salad',label:'سلطة: '+S.food.w[weekStartOf(key||keyOf(dnow()))].s,sub:'من قرعة الأسبوع'}:null,dow===5?{id:'talab',go:'talab',label:'رحلة طلب العلم',sub:'الجمعة عند الظهر'}:null];
+  var FW=S.food&&S.food.w[weekStartOf(key||keyOf(dnow()))]||{};
+  var secs=[
+    {id:'wake',title:'الاستيقاظ',time:'',items:wake},
+    {id:'water',title:'Water',time:'',items:[1,2,3,4].map(function(n){return {id:'w'+n,type:'water',n:n,label:(n/2)+' لتر'}})},
+    {id:'fajr',title:'الفجر',time:'fajr',items:[P('fajr'),{id:'azkar_morning',label:'أذكار الصباح'},{id:'quran',label:'حفظ القرآن',sub:'خمس آيات'},{id:'english',label:'الإنجليزي',sub:'20 دقيقة'},FW.b?{id:'breakfast',label:'الفطور: '+FW.b,sub:'من قرعة الأسبوع'}:null]},
+    {id:'dhuhr',title:'الظهر',time:'dhuhr',items:dhuhr},
+    {id:'asr',title:'العصر',time:'asr',items:[P('asr'),{id:'azkar_evening',label:'أذكار المساء'}]},
+    {id:'maghrib',title:'المغرب',time:'maghrib',items:[P('maghrib'),{id:'beauty',label:'روتين الجمال'}]},
+    {id:'isha',title:'العشاء',time:'isha',items:[P('isha')]},
+    {id:'sleep',title:'قبل النوم',time:'',items:[{id:'walk',type:'walk',label:'عدّاد المشي'},{id:'diary',label:'يومياتي'},{id:'azkar_sleep',label:'أذكار النوم'},{id:'night',label:'روتين الليل',sub:'لف الشعر، ترطيب'}]}
+  ];
+  secs.forEach(function(s){s.items=s.items.filter(Boolean);if(key&&S.tl&&S.tl.rest&&S.tl.rest[key])s.items=s.items.filter(function(it){return it.id!=='talab'})});
+  return secs;
+}
+function isDone(it,d){
+  if(it.type==='prayer')return d.prayer[it.key]!=null;
+  if(it.type==='qiyam')return d.qiyam>0;
+  if(it.type==='walk')return d.walk>0;
+  if(it.type==='water')return d.water>=it.n;
+  return !!d.done[it.id];
+}
+function pctOf(dt){
+  var k=keyOf(dt);if(!S.days[k])return 0;var d=day(k);
+  var n=0,t=0;habitsFor(dt.getUTCDay(),k).forEach(function(s){s.items.forEach(function(it){t++;if(isDone(it,d))n++})});
+  return t?Math.round(n/t*100):0;
+}
+function weekDates(){var t=dnow(),dow=t.getUTCDay(),out=[];for(var i=0;i<7;i++)out.push(new Date(t.getTime()+(i-dow)*86400e3));return out}
+function weekPct(){var t=dnow(),w=weekDates(),n=0,c=0;w.forEach(function(d){if(d<=t||keyOf(d)===keyOf(t)){n+=pctOf(d);c++}});return c?Math.round(n/c):0}
+
+/* ---------- tiny DOM helper ---------- */
+function h(tag,a){
+  var e=document.createElement(tag);a=a||{};
+  Object.keys(a).forEach(function(k){var v=a[k];
+    if(k==='class')e.className=v;else if(k.indexOf('on')===0)e.addEventListener(k.slice(2),v);
+    else if(k.indexOf('aria-')===0&&typeof v==='boolean')e.setAttribute(k,String(v));else if(v===true)e.setAttribute(k,'');else if(v!==false&&v!=null)e.setAttribute(k,v)});
+  for(var i=2;i<arguments.length;i++){[].concat(arguments[i]).forEach(function(c){if(c==null||c===false)return;e.append(c&&c.nodeType?c:document.createTextNode(String(c)))})}
+  return e;
+}
+function ring(day,week,size){
+  var R1=88,R2=70,c1=2*Math.PI*R1,c2=2*Math.PI*R2;
+  var d=document.createElement('div');
+  d.innerHTML='<svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="'+R1+'" fill="none" stroke="var(--track)" stroke-width="12"/><circle cx="100" cy="100" r="'+R1+'" fill="none" stroke="var(--ring-week)" stroke-width="12" stroke-linecap="round" stroke-dasharray="'+(c1*week/100)+' '+c1+'"/><circle cx="100" cy="100" r="'+R2+'" fill="none" stroke="var(--track)" stroke-width="12"/><circle cx="100" cy="100" r="'+R2+'" fill="none" stroke="var(--ring-day)" stroke-width="12" stroke-linecap="round" stroke-dasharray="'+(c2*day/100)+' '+c2+'"/></svg>';
+  return d.firstChild;
+}
+function mini(p){
+  var r=16,c=2*Math.PI*r,d=document.createElement('div');
+  d.innerHTML='<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="'+r+'" fill="none" stroke="var(--track)" stroke-width="5"/><circle cx="20" cy="20" r="'+r+'" fill="none" stroke="var(--ring-day)" stroke-width="5" stroke-linecap="round" stroke-dasharray="'+(c*p/100)+' '+c+'"/></svg>';
+  return d.firstChild;
+}
+var CHECK='<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function chkIcon(){var s=document.createElement('span');s.innerHTML=CHECK;return s.firstChild}
+
+/* ---------- views ---------- */
+var root=document.getElementById('app');
+
+function render(){
+  var keep=document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName);
+  if(keep&&arguments[0]==='tick')return;
+  if(arguments[0]==='tick'&&view!=='today')return;
+  if(view!=='period')perOk=false;
+  root.textContent='';
+  root.append(header());
+  if(view==='today'||view==='weekly'||view==='overall'){root.append(tabs());
+    if(view==='today')root.append(todayView());else if(view==='weekly')root.append(weeklyView());else root.append(overallView());}
+  else if(view==='diary')root.append(diaryView());
+  else if(view==='entry')root.append(entryView());
+  else if(view==='companion')root.append(companion());
+  else if(view==='settings')root.append(settingsView());
+  else if(view==='salam')root.append(salamView());
+  else if(view==='azkar')root.append(azkarView());
+  else if(view==='hadith')root.append(hadithView());
+  else if(view==='charity')root.append(charityView());
+  else if(view==='quran')root.append(quranView());
+  else if(view==='surah')root.append(surahView());
+  else if(view==='review')root.append(reviewView());
+  else if(view==='talab')root.append(talabView());
+  else if(view==='tplan')root.append(planView());
+  else if(view==='tbook')root.append(bookView());
+  else if(view==='tsess')root.append(sessionView());
+  else if(view==='treview')root.append(reviewViewT());
+  else if(view==='tlog')root.append(logView());
+  else if(view==='health')root.append(healthView());
+  else if(view==='food')root.append(foodView());
+  else if(view==='glow')root.append(glowView());
+  else if(view==='period')root.append(periodView());
+  else root.append(soonView(view));
+  if(view==='diary'&&!drawer)root.append(h('button',{class:'fab','aria-label':'مذكرة جديدة',onclick:newEntry},icon('<path d="M12 5v14M5 12h14"/>')));
+  if(drawer)root.append(drawerView());
+}
+var cur=null;
+function nav(v){if(view==='entry'&&v!=='entry')leaveEntry();view=v;drawer=false;try{history.pushState({v:v},'')}catch(e){}render();window.scrollTo(0,0)}
+window.addEventListener('popstate',function(ev){
+  if(drawer){drawer=false;render();return}
+  if(view==='entry')leaveEntry();
+  view=(ev.state&&ev.state.v)||'today';render();window.scrollTo(0,0)});
+function header(){
+  var t=dnow(),ds=new Date(t.getTime()).toLocaleDateString('ar',{weekday:'long',day:'numeric',month:'long',timeZone:'UTC'});
+  var TT={salam:'رحلة السلام',azkar:'الأذكار',hadith:'الحديث الأسبوعي',charity:'الصدقة',quran:'القرآن',review:'مراجعتي',talab:'رحلة طلب العلم',tplan:'الخطة',tbook:'الكتاب',tsess:'جلسة الدراسة',treview:'المراجعة',tlog:'السجل',health:'صحتي وجمالي',food:'قرعة الغذاء',glow:'Glow up',period:'الدورة'};
+  var title=view==='diary'||view==='entry'?'Diary':view==='companion'?S.cname:view==='settings'?'الإعدادات':view==='surah'?'سورة '+SURAHS[curS-1][0]:TT[view]||'La Rose';
+  var sub=(view==='entry'||view==='companion'||view==='azkar'||view==='hadith'||view==='charity'||view==='quran'||view==='surah'||view==='review'||/^t(plan|book|sess|review|log)$/.test(view)||view==='food'||view==='glow'||view==='period');
+  var lead=sub?h('button',{class:'ib','aria-label':'رجوع',onclick:goBack},icon('<path d="M9 6l6 6-6 6" transform="scale(-1 1) translate(-24 0)"/>')):h('button',{class:'ib','aria-label':'القائمة',onclick:function(){drawer=true;render()}},menuIcon());
+  return h('div',{class:'top'},lead,
+    h('h1',{class:(title==='La Rose'||title==='Diary')?'brand':''},title,h('small',null,ds)),
+    h('button',{class:'ib','aria-label':'تبديل المظهر',onclick:toggleTheme},themeIcon()));
+}
+function goBack(){try{history.back();return}catch(e){}if(view==='entry')leaveEntry();view=view==='companion'?'diary':'diary';render();window.scrollTo(0,0)}
+function icon(path){var s=document.createElement('span');s.innerHTML='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+path+'</svg>';return s.firstChild}
+function menuIcon(){return icon('<path d="M4 7h16M4 12h16M4 17h16"/>')}
+function themeIcon(){return icon('<path d="M20 14.5A8 8 0 019.5 4 8 8 0 1020 14.5z"/>')}
+function isDark(){var t=document.documentElement.getAttribute('data-theme');return t?t==='dark':matchMedia('(prefers-color-scheme: dark)').matches}
+function applyTheme(){var r=document.documentElement;if(S.theme==='auto')r.removeAttribute('data-theme');else r.setAttribute('data-theme',S.theme)}
+function toggleTheme(){S.theme=isDark()?'light':'dark';applyTheme();save();render()}
+function tabs(){
+  var items=[['today','اليوم'],['weekly','الأسبوعي'],['overall','الإجمالي']];
+  return h('div',{class:'tabs',role:'tablist'},items.map(function(x){return h('button',{role:'tab','aria-selected':view===x[0],onclick:function(){view=x[0];render()}},x[1])}));
+}
+
+function todayView(){
+  var t=dnow(),k=keyOf(t),d=day(k),dow=t.getUTCDay(),wrap=h('div');
+  var p=pctOf(t),wp=weekPct();
+  var hero=h('div',{class:'hero'},
+    h('div',{class:'ringwrap'},ring(p,wp),h('div',{class:'c'},h('b',null,p+'%'),h('span',null,'إنجاز اليوم'))),
+    h('div',{class:'legend'},
+      h('div',null,h('i',{class:'dot',style:'background:var(--ring-day)'}),'اليوم '+p+'%'),
+      h('div',null,h('i',{class:'dot',style:'background:var(--ring-week)'}),'الأسبوع '+wp+'%'),
+      h('div',{class:'muted'},DAYNAMES[dow]+' · '+SUBJ[dow])));
+  wrap.append(hero);
+  wrap.append(h('div',{class:'pair'},
+    h('button',{class:'pill'+(d.wake?' on':''),onclick:function(){d.wake=d.wake?null:Date.now();save();render()}},'Awake, Beautiful',h('small',null,d.wake?'استيقظتِ '+fmt(d.wake):'اضغطي عند الاستيقاظ')),
+    h('button',{class:'pill'+(d.sleep?' on':''),onclick:function(){d.sleep=d.sleep?null:Date.now();save();render()}},'Sleeping, Beautiful',h('small',null,d.sleep?'نمتِ '+fmt(d.sleep):'اضغطي قبل النوم'))));
+  var times=timesFor(t);
+  if(perReminder())wrap.append(h('div',{class:'note'},'تذكير: قد تبدأ دورتك غداً.'));
+  if(S.rest)wrap.append(h('div',{class:'note'},'وضع الراحة مفعّل: عدّاد الصلاة متوقف ولا يُحسب تقصيراً. يمكنك إيقافه من الإعدادات.'));
+  habitsFor(dow,k).forEach(function(sec){
+    if(sec.id==='water'){wrap.append(waterCard(sec,d));return}
+    var shown=sec.items;
+    var n=sec.items.filter(function(it){return isDone(it,d)}).length;
+    var card=h('section',{class:'sec'},h('header',null,h('h2',null,sec.title),h('span',null,(sec.time&&!S.rest?fmt(times[sec.time])+' · ':'')+n+'/'+sec.items.length)));
+    shown.forEach(function(it){card.append(itemRow(it,d,times))});
+    wrap.append(card);
+  });
+  wrap.append(tasksCard(k,t));
+  wrap.append(h('div',{class:'note'},'أوقات الصلاة محسوبة لدمشق وهي تقريبية، قارنيها مع تقويم الجامع الأموي. العدّاد يحسب من وقت الأذان حين تفتحين التطبيق.'));
+  return wrap;
+}
+function waterCard(sec,d){
+  var card=h('section',{class:'sec'});
+  var row=h('div',{class:'wrow'});
+  sec.items.forEach(function(it){
+    var on=d.water>=it.n;
+    row.append(h('div',{class:'wb'},h('button',{class:'wc'+(on?' on':''),'aria-pressed':on,'aria-label':it.label,onclick:function(){d.water=(d.water===it.n)?it.n-1:it.n;save();render()}},(it.n/2)+'L')));
+  });
+  card.append(h('div',{class:'water'},h('div',{class:'wtitle'},'Water'),h('div',{class:'muted'},'شربتِ '+(d.water/2)+' من 2 لتر'),(S.food.w[wkey()]&&S.food.w[wkey()].d?h('div',{class:'muted'},'مشروب الأسبوع: '+S.food.w[wkey()].d):null),h('div',{class:'wstem'}),row));
+  return card;
+}
+function itemRow(it,d,times){
+  if(it.type==='qiyam')return qiyamRow(it,d);
+  if(it.type==='walk')return walkRow(it,d);
+  if(it.type==='prayer')return prayerRow(it,d,times);
+  var done=isDone(it,d);
+  return h('div',{class:'row tap'+(done?' done':''),onclick:function(){if(it.go){nav(it.go);return}d.done[it.id]=!d.done[it.id];save();render()}},
+    h('button',{type:'button',class:'chk','aria-label':it.label,'aria-pressed':done},done?chkIcon():null),
+    h('div',{class:'t'},it.label,it.sub?h('small',null,it.sub):null));
+}
+function qiyamRow(it,d){
+  var out=h('output',null,String(d.qiyam||0));
+  var r=h('input',{type:'range',min:0,max:100,value:d.qiyam||0,id:'qiyam','aria-label':'عدد الآيات'});
+  r.addEventListener('input',function(){out.textContent=r.value});
+  r.addEventListener('change',function(){d.qiyam=+r.value;save();render()});
+  return h('div',{class:'qrow'},h('div',{class:'qh'},h('span',null,'قيام الليل',h('small',{class:'muted',style:'display:block'},'حرّكي المؤشر وأوقفيه على عدد الآيات التي قرأتِها')),out),r);
+}
+function walkRow(it,d){
+  var inp=h('input',{type:'number',min:0,inputmode:'numeric',id:'walk',value:d.walk||'',placeholder:'الخطوات من تطبيق المشي','aria-label':'عدد الخطوات'});
+  inp.addEventListener('change',function(){d.walk=Math.max(0,parseInt(inp.value,10)||0);save();render()});
+  return h('div',{class:'qrow'},h('div',{class:'qh'},h('span',null,'عدّاد المشي',h('small',{class:'muted',style:'display:block'},'اكتبي رقم الخطوات في آخر اليوم'))),inp);
+}
+function prayerRow(it,d,times){
+  var k=it.key,adhan=times[k],end=k==='fajr'?times.sunrise:k==='dhuhr'?times.asr:k==='asr'?times.maghrib:k==='maghrib'?times.isha:times.fajr+864e5;
+  var now=Date.now(),rec=d.prayer[k],sub,right=null,cls='row';
+  if(rec!=null){cls+=' done';sub=rec<0?'قضاء':rec===0?'صليتِ في أول الوقت':'صليتِ بعد '+rec+' د من الأذان'}
+  else if(now<adhan){sub='الأذان '+fmt(adhan)}
+  else if(now<end){var m=Math.floor((now-adhan)/60000);sub=h('span',{class:'late'},m<1?'دخل الوقت الآن':'تأخرتِ '+m+' د');
+    right=h('button',{class:'btn',onclick:function(){d.prayer[k]=m;save();render()}},'صليت')}
+  else{sub='خرج الوقت';right=h('button',{class:'btn ghost',onclick:function(){d.prayer[k]=-1;save();render()}},'صليت قضاءً')}
+  return h('div',{class:cls},h('div',{class:'chk',style:'pointer-events:none'},rec!=null?chkIcon():null),h('div',{class:'t'},it.label,h('small',null,sub)),right);
+}
+function tasksCard(k,t){
+  var wk=weekDates()[0],wkKey=keyOf(wk);
+  var card=h('section',{class:'sec'},h('header',null,h('h2',null,'المهام'),h('span',null,'تختفي عند الإنجاز')));
+  var list=S.tasks.filter(function(x){return !x.done&&(x.scope==='day'?x.key===k:x.key===wkKey)});
+  var dow=t.getUTCDay(),dayDone=!!day(k).done['task_study'];
+  var hadRow=false;
+  if(S.had.wk===wkey()&&S.had.n!=null){if(!S.had.done){hadRow=true;card.append(h('div',{class:'row tap',onclick:function(){nav('hadith')}},h('div',{class:'chk',style:'pointer-events:none'}),h('div',{class:'t'},'حديث الأسبوع: الحديث '+(S.had.n+1),h('small',null,'اضغطي لقراءته وتسجيل إتقانه'))))}}
+  else{hadRow=true;card.append(h('div',{class:'row tap',onclick:function(){nav('hadith')}},h('div',{class:'chk',style:'pointer-events:none'}),h('div',{class:'t'},'اسحبي حديث هذا الأسبوع',h('small',null,'من الأربعين النووية'))))}
+  if(!dayDone)card.append(h('div',{class:'row tap',onclick:function(){day(k).done['task_study']=true;save();render()}},h('button',{type:'button',class:'chk','aria-label':'دراسة '+SUBJ[dow]}),h('div',{class:'t'},'دراسة '+SUBJ[dow],h('small',null,'مهمة اليوم'))));
+  list.forEach(function(x){card.append(h('div',{class:'row tap',onclick:function(){x.done=true;save();render()}},h('button',{type:'button',class:'chk','aria-label':x.text}),h('div',{class:'t'},x.text,h('small',null,x.scope==='day'?'مهمة اليوم':'مهمة الأسبوع'))))});
+  if(dayDone&&!list.length&&!hadRow)card.append(h('div',{class:'row'},h('div',{class:'t muted'},'لا مهام الآن.')));
+  var inp=h('input',{type:'text',id:'newtask',placeholder:'مثل: إتقان حديث الأسبوع','aria-label':'مهمة جديدة'});
+  var sc=h('select',{id:'taskscope','aria-label':'نوع المهمة'},h('option',{value:'week'},'أسبوعية'),h('option',{value:'day'},'اليوم'));
+  var add=function(){var v=inp.value.trim();if(!v)return;S.tasks.push({id:Date.now(),text:v,scope:sc.value,key:sc.value==='day'?k:wkKey,done:false});S.tasks=S.tasks.slice(-100);save();render()};
+  inp.addEventListener('keydown',function(e){if(e.key==='Enter')add()});
+  card.append(h('div',{class:'stack'},inp,h('div',{class:'two'},sc,h('button',{class:'btn',onclick:add},'أضيفي'))));
+  return card;
+}
+
+function weeklyView(){
+  var w=weekDates(),t=dnow(),wrap=h('div'),tk=keyOf(t);
+  var grid=h('div',{class:'week'});
+  w.forEach(function(dt,i){var fut=dt>t&&keyOf(dt)!==tk,p=fut?0:pctOf(dt);
+    grid.append(h('div',{class:'wd'+(keyOf(dt)===tk?' today':''),style:fut?'opacity:.55':''},DAYNAMES[i].replace('ال',''),mini(p),h('span',null,fut?'—':p+'%'),h('span',null,dt.getUTCDate())))});
+  var wp=weekPct();
+  wrap.append(h('div',{class:'hero',style:'margin-bottom:8px'},h('div',{class:'ringwrap'},ring(pctOf(t),wp),h('div',{class:'c'},h('b',null,wp+'%'),h('span',null,'متوسط الأسبوع'))),h('div',{class:'legend'},h('div',{class:'muted'},'الأسبوع من الأحد إلى السبت'))));
+  wrap.append(grid);
+  var tier=wp>=100?S.reward100||'المكافأة الكبرى':wp>=75?S.reward75||'المكافأة الوسط':null;
+  wrap.append(h('div',{class:'tier'},h('b',null,wp>=100?'100%: مكافأتك الكبرى':wp>=75?'75% فأكثر: مكافأة وسط':'أقل من 75%'),h('div',{class:'muted'},tier||'لا مكافأة ولا عقاب. انظري ما ينقصك وابدئي أسبوعاً جديداً.'),
+    (!S.reward100&&!S.reward75)?h('div',{class:'muted'},'اكتبي مكافآتك من الإعدادات.'):null));
+  var wk=keyOf(w[0]),list=S.tasks.filter(function(x){return x.scope==='week'&&x.key===wk});
+  if(list.length)wrap.append(h('section',{class:'sec'},h('header',null,h('h2',null,'مهام الأسبوع')),list.map(function(x){return h('div',{class:'row'+(x.done?' done':'')},h('div',{class:'chk',style:'pointer-events:none'},x.done?chkIcon():null),h('div',{class:'t'},x.text))})));
+  return wrap;
+}
+function overallView(){
+  var t=dnow(),pc=[];for(var i=0;i<30;i++)pc.push(pctOf(new Date(t.getTime()-i*864e5)));
+  var avg=function(a){return a.length?Math.round(a.reduce(function(x,y){return x+y},0)/a.length):0};
+  var s=0,start=pc[0]>=75?0:1;for(var j=start;j<30&&pc[j]>=75;j++)s++;
+  var pr=0,dl=[];Object.keys(S.days).forEach(function(k){var p=S.days[k].prayer;Object.keys(p).forEach(function(q){if(p[q]!=null){pr++;if(p[q]>=0)dl.push(p[q])}})});
+  var q=0;Object.keys(S.days).forEach(function(k){q+=S.days[k].qiyam||0});
+  var steps=0;Object.keys(S.days).forEach(function(k){steps+=S.days[k].walk||0});
+  return h('div',null,h('div',{class:'stat'},
+    st(avg(pc.slice(0,7))+'%','متوسط آخر 7 أيام'),st(avg(pc)+'%','متوسط آخر 30 يوماً'),
+    st(s,'أيام متتالية بإنجاز 75% فأكثر'),st(pr,'صلوات سُجّلت'),
+    st(dl.length?avg(dl)+' د':'—','متوسط التأخر عن الأذان'),st(q,'آيات قيام الليل'),st(steps.toLocaleString('ar'),'مجموع الخطوات')),
+    h('div',{class:'note'},'الإجمالي يعرض ما سجّلتِه في هذا التطبيق فقط. الأقسام الأخرى تُضاف إليه حين نبنيها.'));
+}
+function st(b,s){return h('div',null,h('b',null,String(b)),h('span',null,s))}
+
+/* ---------- diary + companion ---------- */
+var busy=false,ctl=null;
+function mname(t){return new Date(t).toLocaleDateString('ar',{month:'long',timeZone:'Asia/Damascus'})}
+function newEntry(){cur={id:Date.now(),t:Date.now(),title:'',text:''};nav('entry')}
+function openEntry(e){cur=e;nav('entry')}
+function leaveEntry(){
+  if(cur){var i=S.diary.indexOf(cur);if(i>=0&&!(cur.title||'').trim()&&!(cur.text||'').trim())S.diary.splice(i,1);cur=null;save()}
+}
+function diaryView(){
+  var wrap=h('div');
+  if(sampleFn)wrap.append(h('button',{class:'btn ghost',style:'margin:4px 0 2px',onclick:function(){nav('companion')}},S.cname+' · محادثة'));
+  var list=S.diary.slice().sort(function(a,b){return b.t-a.t}),last=null;
+  list.forEach(function(e){
+    var dt=new Date(e.t+TZ*3600e3),key=dt.getUTCFullYear()*12+dt.getUTCMonth();
+    if(key!==last){last=key;wrap.append(h('div',{class:'dmonth'},mname(e.t)))}
+    var title=(e.title||'').trim(),prev=e.text||'';
+    if(!title){var ls=prev.split('\n');title=ls[0];prev=ls.slice(1).join('\n').trim()}
+    wrap.append(h('button',{class:'dcard',onclick:function(){openEntry(e)}},
+      h('div',{class:'dh'},h('span',{class:'dnum'},String(dt.getUTCDate())),h('span',null,mname(e.t))),
+      h('div',{class:'dt'},title||'بلا عنوان'),prev?h('div',{class:'dp'},prev):null));
+  });
+  if(!S.diary.length)wrap.append(h('div',{class:'muted',style:'text-align:center;margin:40px 0'},'لا مذكرات بعد. اضغطي + لتبدئي أول مذكرة.'));
+  wrap.append(h('div',{style:'height:90px'}));
+  return wrap;
+}
+function micButton(ta){
+  var on=false,btn=h('button',{class:'btn ghost',type:'button','aria-label':'كتابة بالصوت'},'🎙 صوت');
+  function setOn(v){on=v;btn.textContent=v?'⏹ إيقاف':'🎙 صوت'}
+  function add(txt){ta.value=(ta.value&&!/\s$/.test(ta.value)?ta.value+' ':ta.value)+txt;ta.dispatchEvent(new Event('input'))}
+  if(dict){
+    dict.onFinal(function(r){add(r.text)});dict.onState(function(s){if(s.state==='idle')setOn(false)});
+    btn.addEventListener('click',function(){if(on){dict.stop();return}dict.start().then(function(){setOn(true)}).catch(function(){})});
+    return btn}
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return null;
+  var rec=null;
+  btn.addEventListener('click',function(){
+    if(on&&rec){rec.stop();return}
+    try{rec=new SR();rec.lang='ar-SY';rec.continuous=true;rec.interimResults=false;
+      rec.onresult=function(ev){for(var i=ev.resultIndex;i<ev.results.length;i++)if(ev.results[i].isFinal)add(ev.results[i][0].transcript.trim())};
+      rec.onend=function(){setOn(false)};rec.onerror=function(){setOn(false)};rec.start();setOn(true)}catch(e){setOn(false)}});
+  return btn;
+}
+function entryView(){
+  var e=cur;if(!e)return h('div');
+  var wrap=h('div');
+  var when=new Date(e.t).toLocaleString('ar',{weekday:'long',day:'numeric',month:'long',hour:'numeric',minute:'2-digit',timeZone:'Asia/Damascus'});
+  var ti=h('input',{type:'text',class:'etitle',placeholder:'العنوان','aria-label':'عنوان المذكرة',value:e.title||''});
+  var ta=h('textarea',{class:'ebody',placeholder:'اكتبي هنا…','aria-label':'نص المذكرة'});ta.value=e.text||'';
+  function touch(){if(S.diary.indexOf(e)<0)S.diary.unshift(e);save()}
+  ti.addEventListener('input',function(){e.title=ti.value;touch()});
+  ta.addEventListener('input',function(){e.text=ta.value;touch()});
+  var bar=h('div',{class:'form',style:'justify-content:flex-start;flex-wrap:wrap;margin:6px 0'});
+  var mic=micButton(ta);if(mic)bar.append(mic);
+  if(sampleFn){
+    var tidy=h('button',{class:'btn ghost',type:'button'},'رتّبي النص'),undo=null,before='';
+    tidy.addEventListener('click',function(){
+      var v=ta.value.trim();if(!v||tidy.disabled)return;
+      tidy.disabled=true;tidy.textContent='…';before=ta.value;
+      sampleFn('رتّبي النص التالي: أضيفي علامات الترقيم وقسّميه إلى فقرات وصحّحي أخطاء الإملاء الواضحة (وخصوصاً أخطاء الكتابة الصوتية)، دون تغيير المعنى أو إضافة أي معلومة أو حذف أي فكرة. أعيدي النص المرتب فقط بلا أي مقدمة.\n\n'+v,{cache:false,modelTier:'quick'}).then(function(r){
+        ta.value=r.text.trim();ta.dispatchEvent(new Event('input'));
+        if(!undo){undo=h('button',{class:'btn ghost',type:'button',onclick:function(){ta.value=before;ta.dispatchEvent(new Event('input'));undo.remove();undo=null}},'تراجع');bar.append(undo)}
+      }).catch(function(){tidy.textContent='تعذّر الترتيب'}).then(function(){tidy.disabled=false;if(tidy.textContent==='…')tidy.textContent='رتّبي النص'});
+    });
+    bar.append(tidy);
+  }
+  var del=h('button',{class:'btn ghost',type:'button',style:'margin-inline-start:auto'},'حذف');
+  del.addEventListener('click',function(){
+    if(!del.dataset.s){del.dataset.s='1';del.textContent='اضغطي مرة أخرى للحذف';return}
+    var i=S.diary.indexOf(e);if(i>=0)S.diary.splice(i,1);cur=null;save();goBack()});
+  bar.append(del);
+  wrap.append(h('div',{class:'muted',style:'margin:6px 2px'},when),ti,ta,bar);
+  if(!e.title&&!e.text)setTimeout(function(){try{ta.focus()}catch(x){}},50);
+  return wrap;
+}
+function context(){
+  var t=dnow(),d=day(keyOf(t)),n=0,tot=0;
+  habitsFor(t.getUTCDay()).forEach(function(s){s.items.forEach(function(it){if(it.type==='prayer'){tot++;if(d.prayer[it.key]!=null)n++}})});
+  return 'تقدم اليوم '+pctOf(t)+'% ، تقدم الأسبوع '+weekPct()+'% ، قيام الليل اليوم '+(d.qiyam||0)+' آية ، الصلوات المسجلة '+n+' من '+tot+'.';
+}
+function companion(){
+  var box=h('section',{class:'sec',style:'padding-bottom:12px'});
+  box.append(h('header',null,h('h2',null,S.cname),h('span',null,'رفيقة للمحادثة')));
+  var list=h('div',{class:'chat',style:'padding:0 12px',id:'chat','aria-live':'polite'});
+  S.chat.slice(-12).forEach(function(m){list.append(h('div',{class:'msg '+(m.role==='user'?'u':'a')},m.content))});
+  if(!S.chat.length)list.append(h('div',{class:'muted'},'أنا هنا. احكي لي كيف كان يومك، أو ما يثقل عليك.'));
+  box.append(list);
+  if(!sampleFn){box.append(h('div',{class:'muted',style:'padding:0 16px'},'المحادثة غير متاحة في هذا العرض.'));return box}
+  var inp=h('textarea',{id:'cin',style:'min-height:56px',placeholder:'اكتبي لرفيقتك…','aria-label':'رسالتك'});
+  var send=h('button',{class:'btn',id:'csend'},'إرسال'),stop=h('button',{class:'btn ghost',hidden:true},'إيقاف');
+  stop.addEventListener('click',function(){if(ctl)ctl.abort()});
+  send.addEventListener('click',function(){
+    var v=inp.value.trim();if(!v||busy)return;
+    busy=true;send.disabled=true;stop.hidden=false;inp.value='';
+    S.chat.push({role:'user',content:v});
+    list.append(h('div',{class:'msg u'},v));
+    var bub=h('div',{class:'msg a'},'…');list.append(bub);
+    var rules='أنتِ رفيقة لطيفة اسمك '+S.cname+' داخل مفكرة طالبة هندسة مدنية مسلمة في دمشق تتابع عاداتها. تحدثي بالعربية البسيطة الدافئة وبجمل قصيرة (من جملتين إلى أربع غالباً). ابدئي بالطبطبة على شعورها، ثم اقترحي خطوة صغيرة واقعية إن ناسب، وقدّري تقدمها بلا مبالغة ولا لوم. لا تدّعي أنك إنسانة أو معالجة نفسية ولا تشخّصي. إن ظهر منها يأس شديد أو رغبة في إيذاء نفسها، فاستمعي بحنان وشجعيها أن تتواصل الآن مع شخص تثق به ومع مختص أو خدمة الطوارئ في بلدها. لا تذكري أرقاماً عن تقدمها غير الموجودة هنا. '+context();
+    var turns=[{role:'user',content:rules}].concat(S.chat.slice(-20));
+    ctl=new AbortController();
+    sampleFn(turns,{cache:false,signal:ctl.signal,modelTier:'default',onText:function(u){bub.textContent=u.text}}).then(function(r){
+      S.chat.push({role:'assistant',content:r.text});save();
+    }).catch(function(e){
+      if(e&&e.text){bub.textContent=e.text;S.chat.push({role:'assistant',content:e.text});save()}
+      else{S.chat.pop();bub.textContent=e&&e.code==='cancelled'?'تم الإيقاف.':e&&e.code==='not_granted'?'لم تُمنح الصلاحية للمحادثة.':'تعذّر الرد الآن، جرّبي بعد قليل.'}
+    }).then(function(){busy=false;send.disabled=false;stop.hidden=true;ctl=null;list.scrollTop=list.scrollHeight});
+  });
+  box.append(h('div',{class:'form',style:'padding:0 12px'},h('div',{style:'flex:1'},inp),send,stop));
+  if(S.chat.length){box.append(h('div',{style:'padding:6px 16px 0'},h('button',{class:'muted',style:'text-decoration:underline',onclick:function(){S.chat=[];save();render()}},'مسح المحادثة')))}
+  box.append(h('div',{class:'muted',style:'padding:6px 16px 0;font-size:12.5px'},S.cname+' ليست بديلاً عن مختص أو عن شخص تثقين به.'));
+  return box;
+}
+
+var HADITH=["عن أمير المؤمنين أبي حفص عمر بن الخطاب رضي الله عنه قال سمعت رسول الله صلى الله عليه وسلم يقول \" إنما الأعمال بالنيات , وإنما لكل امرئ ما نوى , فمن كانت هجرته إلى الله ورسوله فهجرته إلى الله ورسوله , ومن كانت هجرته إلى دنيا يصيبها و امرأة ينكحها فهجرته إلى ما هاجر إليه \" متفق عليه .", "عن أم المؤمنين أم عبدالله عائشة رضي الله عنها قال : قال رسول الله صلى الله عليه وسلم \" من أحدث في أمرنا هذا ما ليس منه فهو رد \" رواه البخاري ومسلم , وفي رواية لمسلم \" من عمل عملا ليس عليه أمرنا فهو رد \"", "عن أبي عبدالله النعمان بن بشير رضي الله عنهما قال : سمعت رسول الله صلى الله عليه وسلم يقول \" إن الحلال بين و الحرام بين , وبينهما مشتبهات قد لا يعلمهن كثير من الناس , فمن اتقى الشبهات فقد استبرأ لدينه وعرضه , ومن وقع في الشبهات فقد وقع في الحرام , كالراعي يرعى حول الحمى يوشك أن يرتع فيه , ألا وأن لكل ملك حمى , ألا وإن حمى الله محارمه , إلا وإن في الجسد مضغة إذا صلحت صلح الجسد كله , وإذا فسدت فسد الجسد كله , ألا وهي القلب \" رواه البخاري ومسلم .", "عن عمر بن الخطاب رضي الله عنه قال : بينما نحن جلوس عند رسول الله صلى الله عليه وسلم ذات يوم إذ طلع علينا رجل شديد بياض الثياب شديد سواد الشعر , لا يرى عليه أثر السفر , ولا يعرفه منا أحد حتى جلس إلى النبي صلى الله عليه وسلم فأسند ركبته إلى ركبتيه ووضح كفيه على فخذيه , وقال : يا محمد أخبرني عن الإسلام , فقال رسول الله صلى الله عليه وسلم \" الإسلام أن تشهد أن لا إله إلا الله وأن محمدا رسول الله وتقيم الصلاة وتؤتي الزكاة وتصوم رمضان وتحج البيت إن استطعت إليه سبيلا \" قال صدقت فعجبا له يسأله ويصدقه , قال : أخبرني عن الإيمان قال \" أن تؤمن بالله وملائكته وكتبه ورسله واليوم الآخر وتؤمن بالقدر خيره وشره \" قال : صدقت , قال : فأخبرني عن الإحسان , قال \" أن تعبد الله كأنك تراه , فإن لم تكن تراه فإنه يراك \" قال , فأخبرني عن الساعة , قال \" ما المسئول بأعلم من السائل \" قال فأخبرني عن اماراتها . قال \" أن تلد الأمة ربتها وأن ترى الحفاة العراة العالة رعاء الشاء يتطاولون في البنيان \" . ثم انطلق فلبث مليا , ثم قال \" يا عمر , أتدري من السائل ؟\" , قلت : الله ورسوله أعلم , قال \" فإنه جبريل أتاكم يعلمكم دينكم \" رواه مسلم .", "عن أبي عبدالرحمن عبدالله بن عمر بن الخطاب رضي الله عنهما قال سمعت رسول الله صلى الله عليه وسلم يقول \" بني الإسلام على خمس : شهادة أن لا إله إلا الله وأن محمدا رسول الله وإقام الصلاة وإيتاء الزكاة وحج البيت وصوم رمضان \" رواه البخاري ومسلم", "عن أبي عبدالرحمن عبدالله بن مسعود رضي الله عنه قال حدثنا رسول الله صلى الله عليه وسلم وهو الصادق المصدوق \" إن أحدكم يجمع خلقه في بطن أمه أربعين يوما نطفة ثم علقه مثل ذلك ثم يكون مضغة مثل ذلك , ثم يرسل إليه الملك فينفخ فيه الروح , ويؤمر بأربع كلمات : بكتب رزقه , وأجله , وعمله , وشقي أم سعيد . فوالله الذي لا إله غيره إن أحدكم ليعمل بعمل أهل الجنة حتى ما يكون بينه وبينها إلا ذراع فيسبق عليه الكتاب فيعمل بعمل أهل النار , وإن أحدكم ليعمل بعمل أهل النار حتى ما يكون بينه وبينها إلا ذراع فيسبق عليه الكتاب فيعمل بعمل أهل الجنة \" رواه البخاري ومسلم", "عن أبي تميم بن أوس رضي الله عنه أن النبي صلى الله عليه وسلم قال \" الدين النصيحة قلنا لمن ؟ قال : لله ولرسوله وللأئمة المسلمين و عامتهم \" رواه البخاري ومسلم .", "عن ابن عمر رضي الله عنهما أن رسول الله صلى الله عليه وسلم قال \" أمرت أن أقاتل الناس حتى يشهدوا أن لا إله إلا الله وأن محمدا رسول الله ويقيموا الصلاة ويؤتوا الزكاة , فإذا فعلوا ذلك عصموا مني دماءهم وأموالهم إلا بحق الإسلام وحسابهم على الله تعالى \" رواه البخاري ومسلم", "عن أبي هريرة عبدالرحمن بن صخر رضي الله عنه قال سمعت رسول الله صلى الله عليه وسلم يقول \" ما نهيتكم عنه فاجتنبوه وما أمرتكم به فأتوا منه ما استطعتم , فإنما أهلك الذين من قبلكم كثرة مسائلم واختلافهم على أنبيائهم \" رواه البخاري ومسلم .", "عن أبي هريرة رضي الله عنه قال : قال رسول الله صلى الله عليه وسلم \" من حسن إسلام المرء ترك ما لا يعنيه: \" حديث حسن رواه الترمذي وغيره هكذا", "عن أبي محمد الحسن بن علي بن أبي طالب سبط رسول الله صلى الله عليه وسلم وريحانته رضي الله عنهما قال حفظت من رسول الله صلى الله عليه وسلم \" دع ما يريبك إلى ما لا يريبك \" رواه الترمذي وقال : حديث حسن صحيح .", "عن أبي هريرة رضي الله عنه أن رجلا قال للنبي صلى الله عليه وسلم : أوصني قال : \" لا تغضب \" فردد مِرارا , قال \" لا تغضب \" رواه البخاري .", "عن أبي هريرة رضي الله عنه أن رسول الله صلى الله عليه وسلم قال \" من كان يؤمن بالله واليوم الاخر فليقل خيراً أو ليصمت , ومن كان يوم بالله واليوم الاخر فليكرم جاره , ومن كان يؤمن بالله واليوم الاخر فليكرم ضيفه \"رواه البخاري ومسلم .", "عن أبي حمزة أنس بن مالك رضي الله عنه –خادم رسول اله صلى الله عليه وسلم قال \" لا يؤمن أحدكم حتى يحب لأخيه ما يحب لنفسه \" رواه البخاري ومسلم", "عن أبي هريرة –رضي الله عنه – قال : قال رسول الله صلى الله عليه وسلم \" إن الله تعالى طيب لا يقبل إلا طيبا ،وان الله أمر المؤمنين بما أمر به المرسلين ..فقال تعالى \" يَا أَيُّهَا الرُّسُلُ كُلُوا مِنَ الطَّيِّبَاتِ وَاعْمَلُوا صَالِحًا... \" المؤمنون /51... وقال الله تعالى \" يَا أَيُّهَا الَّذِينَ آمَنُوا كُلُوا مِنْ طَيِّبَاتِ مَا رَزَقْنَاكُم ...\" البقرة/172 ... ثم ذكر رجل يطيل السفر أشعث اغبر يمد يده إلى السماء يا رب يا رب ، ومطعمه حرام ومشربه حرام وملبسة حرام وغذي بالحرام فإنى يستجاب له \" رواه المسلم .", "ابن مسعود رضي الله عنه قال : قال رسول الله صلى الله عليه وسلم \" لا يحل دمُ امرئ مسلم يشهد أن لا إله إلا الله وأني رسول الله إلا بإحدى ثلاث : الثيب الزاني , والنفس بالنفس , والتارك لدينه المفارق للجماعة \" رواه البخاري ومسلم .", "عن أبي يعلى شداد بن أوس رضي الله عنه عن رسول الله صلى الله عليه وسلم قال : \" إن الله كتب الإحسان على كل شيء , فإذا قتلتم فأحسنوا القتلة , وإذا ذبحتم فأحسنوا الذبحة وليحد أحدكم شفرته وليرح ذبيحته \" رواه مسلم .", "عن أبي ذر جندب بن جنادة وأبي عبدالرحمن معاذ بن جبل رضي الله عنهما عن رسول الله صلى الله عليه وسلم قال \" اتق الله حيثما كنت , وأتبع السيئة الحسنة تمحها وخالق الناس بخلق حسن \" رواه الترمذي , وقال : حديث حسن وفي بعض النسخ : حسن صحيح .", "عن أبي العباس عبدالله بن عباس رضي الله عنه قال كنت خلف النبي صلى الله عليه وسلم يوماً فقال \" يا غلام , إني أعلمك كلمات : احفظ الله يحفظك , احفظ الله تجده تجاهك , إذا سألت فاسأل الله وإذا استعنت فاستعن بالله , واعلم أن الأمة لو اجتمعت على أن ينفعوك بشيء لم ينفعوك إلا بشيء قد كتبه الله لك , وإن اجتمعوا على أن يضروك بشيء لم يضروك إلا بشيء قد كتبه الله عليك , رفعت الأقلام وجفت الصحف \" رواه الترمذي وقال : حديث حسن صحيح وفي رواية غير الترمذي \" احفظ الله تجده أمامك , تعرف إلى الله في الرخاء يعرفك في الشدة , واعلم أن ما أخطأك لم يكن ليصيبك وما أصابك لك يكن ليخطئك , واعلم أن النصر مع الصبر , وأن الفرج مع الكرب , وأن مع العسر يسراً \" .", "عن أبي مسعود عقبة بن عمرو الأنصاري البدري – رضي الله عنه قال : قال رسول الله صلى الله عليه وسلم \" إن ما أدرك الناس من كلام النبوة الأولى , إذا لم تستح فاصنع ما شئت \" واه البخاري .", "عن أبي عمرو وقيل : أبي عمرة سفيان بن عبدالله الثقفي رضي الله عنه – قال : يا رسول الله , قل لي في الإسلام قولاً لا أسأل عنه أحداً غيرك, قال \" قل آمنت بالله ثم استقم \" رواه مسلم .", "عن أبي عبدالله جابر بن عبدالله الأنصاري رضي الله عنهما أن رجلاً سأل رسول الله صلى الله عليه وسلم فقال : أرأيت إذا صليت المكتوبات , وصمت رمضان وأحللت الحلال , وحرمت الحرام ولم أزد على ذلك شيئاً أأدخل الجنة ؟ قال - نعم - رواه مسلم", "عن أبي مالك –الحارث بن عاصم- الأشعري رضي الله عنه قال : قال رسول الله صلى الله عليه وسلم - الطهور شطر الإيمان والحمد لله تملأ الميزان وسبحان الله والحمد لله تملأ ما بين السماء والأرض والصلاة نور والصدقة برهان والصبر ضياء والقران حجة لك أو عليك كل الناس يغدو فبائع نفسه فمعتقها أو مُوبقها -\" رواه مسلم", "عن أبي ذر الغفاري رضي الله عنه عن النبي صلى الله عليه وسلم فيما يرويه عن ربه عزوجل أنه قال : - يا عبادي إني حرمت الظلم على نفسي , وجعلته بينكم محرماً فلا تظالموا , يا عبادي كلكم ضال إلا من هديته فاستهدوني أهدكم , يا عبادي كلكم جائع إلا من أطعمته فاستطعموني أطعمكم , يا عبادي كلكم عارٍ إلا من كسوته فاستكسوني أكسكم , يا عبادي إنكم تخطئون بالليل والنهار وأنا أغفر الذنوب جميعاً فاستغفروني أغفر لكم , يا عبادي إنكم لن تبلغوا ضري فتضروني ولن تبلغوا نفعي فتنفعوني, يا عبادي , لو أن أولكم و آخركم, وإنكسم وجنكم كانوا على أتقى قلب رجل واحد منكم ما زاد ذلك في ملكي شيئاً , يا عبادي لو أن أولكم و آخركم وإنكسم وجنكم كانوا على أفجر قلب رجل واحد منكم ما نقص ذلك في ملكي شيئاً , يا عبادي لو أن أولكم و آخركم وإنكسم وجنكم قاموا على صعيد واحد فسألوني فأعطيت كل واحد مسألته ما نقص ذلك مما عندي إلا كما ينقص المخيط إذا أدخل البحر , يا عبادي إنما هي أعمالكم أحصيها لكم ثم أوفيكم إياها فمن وجد خيراً فليحمد الله ومن وجد غير ذلك فلا يلومن إلا نفسه - رواه مسلم", "عن أبي ذر رضي الله عنه أن أناساً من أصحاب رسول الله صلى الله عليه وسلم قالوا للنبي صلى الله عليه وسلم : يا رسول الله ذهب أهل الدثور بالأجور يُصلون كما نصلي ويصومون كما نصوم ويتصدقون بفضول أموالهم قال - أوليس الله جعل لكم ما تصدقون به إن لكم بكل تسبيحة صدقة , وكل تكبيرة صدقة , وكل تحميدة صدقة وكل تهليله صدقة , وأمر بالمعروف صدقة ونهي عن منكر صدقة ,وفي يُضح أحدكم صدقة - قالوا يا رسول الله أيأتي أحدنا شهوته ويكون له فيها أجر ؟ قال - أرأيتم لو وضعها في حرام أكان عليه وزر فكذلك إذا وضعها في الحلال كان له أجر", "عن أبي هريرة رضي الله عنه قال : قال رسول الله صلى الله عليه وسلم - كل سُلامى من الناس صدقة , كل يوم تطلع فيه الشمس تعدل بين اثنين صدقة , وتعين الرجل في دابته فتحمله عليها أ, ترفع عليها متاعه صدقة , والكلمة الطيبة صدقة , وبكل خطوة تمشيها إلى الصلاة صدقة , وتميط الأذى عن الطريق صدقة \" رواه البخاري ومسلم", "عن النواس بن سمعان رضي الله عنه عن النبي صلى الله عليه وسلم قال \" البر حسن الخلق والإثم ما حاك في نفسك وكرهت أن يطلع عليه الناس \" رواه مسلم ... وعن وابصة بن مَعبد رضي الله عنه قال أتيت رسول الله صلى الله عليه وسلم فقال \" جئت تسأل عن البر؟ \" قلت : نعم قال \" استفت قلبك , البر ما اطمأنت إليه النفس واطمأن إليه القلب , والإثم ما حاك في النفس وتردد في الصدر وإن أفتاك الناس وأفتوك \" حديث حسن رويناه في مسندي الإمامين أحمد بن حنبل والدرامي بإسناد حسن .", "عن أبي نجيح العرباض بن سارية رضي الله عنه قال : وعظنا رسول الله صلى الله عليه وسلم موعظة وجلت منها القلوب وذرفت منها العيون , فقلنا يل رسول الله كأنها موعظة مودعٍ فأوصنا , قال - أوصيكم بتقوى الله عزوجل , والسمع والطاعة وإن تأمر عليك عبد , فإنه من يعش منكم فسيرى اختلافاً كثيراً . فعليكم بسنتي وسنة الخلفاء الراشدين المهدين عضوا عليها بالنواجذ , وإياكم ومحدثات الأمور فإن كل بدعة ضلالة - رواه أبوداود والترمذي وقال : حديث حسن صحيح .", "عن معاذ بن جبل رضي الله عنه قال : قلت يا رسول الله أخبرني عن عمل يدخلني الجنة و يباعدني عن النار ؟ قال - لقد جئت تسأل عن عظيم وإنه ليسير على من يسره الله تعالى عليه : تعبد الله لا تشرك به شيئاً وتقيم الصلاة وتؤتي الزكاة وتصوم رمضان وتحج البيت , ثم قال : ألا أدلك على أبواب الخير ؟ الصوم جُنة والصدقة تطفئ الخطيئة كما يطفئ الماء النار , وصلاة الرجل في جوف الليل ثم تلا - تَتَجَافَى جُنُوبُهُمْ عَنِ الْمَضَاجِعِ يَدْعُونَ رَبَّهُمْ خَوْفًا وَطَمَعًا وَمِمَّا رَزَقْنَاهُمْ يُنْفِقُون*فَلَا تَعْلَمُ نَفْسٌ مَا أُخْفِيَ لَهُمْ مِنْ قُرَّةِ أَعْيُنٍ جَزَاءً بِمَا كَانُوا يَعْمَلُونََ - ]السجدة16-17]... ثم قال ألا أخبرك برأس الأمر وعموده وذروة سنامه ؟ - قلت : بلى , يا رسول الله قال \" رأسٍ الإسلام , وعموده الصلاة وذروة سنامه الجهاد \" ثم قال : ألا أخبرك بملاك ذلك كله ؟ \" فقلت ك بلى يا رسول الله , فأخذ بلساني وقال - كف عليك هذا - فقلت : يا نبي الله , و إنا لمؤاخذون بما نتكلم ؟ فقال- ثكلتك أمك , وهل يكب الناس في النار على وجوههم - أو قال - على مناخرهم إلا حصائد ألسنتهم ؟! - رواه الترمذي وقال : حديث حسن صحيح .", "عن أبي ثعلبة الخشني جرثوم بن ناشر – رضي الله عنه – عن رسول الله صلى الله علية وسلم قال : \" إن الله تعالى فرض فرائض فلا تضيعوها،وحد حدودا فلا تعتدوها، وحرم أشياء فلا تنتهكوها ، وسكت عن أشياء رحمة لكم غير نسيان فلا تبحثوا عنها \". حديث حسن رواه الدارقطني وغيره .", "عن ابي العباس سهل بن سعد الساعدي – رضي الله عن – قال : جاء رجل إلى النبي صلى الله علية و سلم فقال : يا رسول الله الله ، دلني على عمل إذا عملته احبني الله و احبني الناس فقال : - ازهد في الدنيا يحبك الله ، وازهد فيما عند الناس يحبك الناس- حديث حسن رواه ابن ماجه و غيره باسانيد حسنه .", "عن أبى سعيد بن سعد بن سنان الخدري – رضي الله عنه – أن رسول الله صلى الله عليه و سلم قال 0 لا ضرر و لا ضِرار 0 حديث حسن رواه ابن ماجه و الدارقطني و غيرهما مسندا ورواه مالك في الموطأ مرسلا عن عمرو بن يحيى عن أبيه عن النبي صلى الله عليه وسلم فأسقط أبا سعيد ، وله طرق أخرى يقوي بعضها بعضا .", "عن ابن عباس – رضي الله عنه – أن رسول الله صلى الله عليه و سلم قال - لو يعطى الناس بدعواهم ، لا دعى رجال أموال قوم و دماءهم لكن البينة على من المدعي و اليمن على من أنكر - حديث حسن رواه البيهقي و غيره هكذا، وبعضه في الصحيحين .", "عن أبي سعيد الخدري – رضي الله عنه – قال : قال سمعت رسول الله صلى الله عليه وسلم يقول - من رأى منكن منكرا فليغيره بيده ، فإن لم يستطع فبلسانه ، فإن لم يستطع فبقلبه و ذلك أضعف الإيمان - رواه مسلم .", "عن أبى هريرة – رضي الله عنه – قال : قال رسول الله صلى الله عليه و سلم - لا تحاسدوا ، و لا تناجشوا ، و لا تباغضوا و لا تدابروا ، و لا يبع بعضكم على بيع بعض ، و كونوا عباد الله إخوانا ، السلم أخو المسلم لا يظلمه و لا يخذله ، و لا يكذبه و لا يحقره ، التقوى ها هنا – و يشير إلى صدره ثلاث مرات – بحسب امرئ من الشر أن يحقر أخاه المسلم كل المسلم على المسلم حرام دمه و ماله و عرضه - رواه مسلم .", "عن ابي هريرة – رضي الله عنه قال- عن النبي صلى الله عليه و سلم قال - من نفس عن مؤمن كربة من كرب الدنيا نفس الله عنه كربة من مرب يوم القيامة ، ومن يسر على معسر يسر الله عليه في الدنيا و الآخرة ، ومن ستر مسلما ستره الله فى الدنيا و الآخرة ، و الله في عون العبد ما كان العبد في عون أخيه . و من سلط طريقا يلتمس فيه علما سهل الله به طريقا الى الجنة ، وما اجتمع قوم في بيت من بيوت الله يتلون كتاب الله و يتدارسونه بينهم إلا نزلت عليهم السكينة و غشيتهم الرحمة و حفتهم الملائكة و ذكرهم الله في من عنده ، و من بطأ به عمله لم يسرع به نسبه - رواه مسلم بهذا اللفظ .", "عن ابن عباس – رضي الله عنه – عن رسول الله صلى الله عليه وسلم فيما يريه عن ربه تبارك و تعالى قال - إن الله كتب الحسنات و السيئات ثم بين ذلك : فمن هم بحسنة فلم يعملها كتبها الله عنده حسنة كاملة و إن هم بها فعملها كتبها الله عنده عشر حسنات إلى سبعمائة ضعف إلى أضعاف كثيرة ، و إن هم بسيئة فلم يعملها كتبها الله عنده حسنة كاملة ، وإن هم بها فعملها كتبها الله سيئة واحدة- رواه البخاري و مسلم في صحيحيهما بهذه الحروف .", "عن أبي هريرة – رضي الله عنه – قال : قال رسول الله صلى الله عليه وسلم - إن الله تعالى قال : من عادي لي وليا فقد آذنته بالحرب ، وما تقرب إلي عبدي بشيء أحب إلي مما افترضت عليه ، و لا يزال عبدي يتقرب إلي بالنوافل حتى أحبه ، فإذا أحببته كنت سمعه الذي سمع به و بصره الذي يبصر به ، و يده التي يبطش بها و رجله التي يمشي بها و لئن سألني لأعطينه ، و لئن استعاذني لأعيذنه - رواه البخاري .", "عن ابن عباس – رضي الله عنه – أ، رسول الله صلى الله عليه وسلم قال - إن الله تجاوز لي عن أمتي الخطأ و النسيان ، و ما استكرهوا عليه - حديث حسن رواه ابن ماجه و البيهقي و غيرهما.", "عن ابن عمر رضي الله عنهما قال أخذ رسول الله صلى الله عليه وسلم بمنكبي رضي الله عنه فقال - كن في الدنيا كأنك غريب , أو عابر سبيل - وكان ابن عمر رضي الله عنه يقول \" إذا أمسيت فلا تنتظر الصباح وإذا أصبحت فلا تنتظر المساء وخذ من صحتك لمرضك ومن حياتك لمماتك \" رواه البخاري", "عن أبي محمد عبدالله بن عمرو بن العاص رضي الله عنه ما قال قال رسول الله صلى الله عليه وسلم - لا يؤمن أحدكم حتى يكون هواه تبعاُ لما جئت به - حديث صحيح رويناه في كتاب الحجة بإسناد صحيح .", "عن أنس رضي الله عنه قال سمعت رسول الله صلى الله عليه وسلم يقول - قال الله تعالى : يا بن ادم إنك ما دعوتني ورجوتني غفرت لك على ما كان ولا أبالي , يا بن ادم لو بلغت ذنوبك عنان السماء ثم استغفرتني غفرت لك , يا بن ادم إنك لو أتيتني بقراب الأرض خطايا ثم لقيتني لا تشرك بي شيئاً لأتيتك بقرابها مغفرة - رواه الترمذي وقال حديث حسن صحيح ."];
+var SURAHS_RAW="الفاتحة:7|البقرة:286|آل عمران:200|النساء:176|المائدة:120|الأنعام:165|الأعراف:206|الأنفال:75|التوبة:129|يونس:109|هود:123|يوسف:111|الرعد:43|إبراهيم:52|الحجر:99|النحل:128|الإسراء:111|الكهف:110|مريم:98|طه:135|الأنبياء:112|الحج:78|المؤمنون:118|النور:64|الفرقان:77|الشعراء:227|النمل:93|القصص:88|العنكبوت:69|الروم:60|لقمان:34|السجدة:30|الأحزاب:73|سبأ:54|فاطر:45|يس:83|الصافات:182|ص:88|الزمر:75|غافر:85|فصلت:54|الشورى:53|الزخرف:89|الدخان:59|الجاثية:37|الأحقاف:35|محمد:38|الفتح:29|الحجرات:18|ق:45|الذاريات:60|الطور:49|النجم:62|القمر:55|الرحمن:78|الواقعة:96|الحديد:29|المجادلة:22|الحشر:24|الممتحنة:13|الصف:14|الجمعة:11|المنافقون:11|التغابن:18|الطلاق:12|التحريم:12|الملك:30|القلم:52|الحاقة:52|المعارج:44|نوح:28|الجن:28|المزمل:20|المدثر:56|القيامة:40|الإنسان:31|المرسلات:50|النبأ:40|النازعات:46|عبس:42|التكوير:29|الانفطار:19|المطففين:36|الانشقاق:25|البروج:22|الطارق:17|الأعلى:19|الغاشية:26|الفجر:30|البلد:20|الشمس:15|الليل:21|الضحى:11|الشرح:8|التين:8|العلق:19|القدر:5|البينة:8|الزلزلة:8|العاديات:11|القارعة:11|التكاثر:8|العصر:3|الهمزة:9|الفيل:5|قريش:4|الماعون:7|الكوثر:3|الكافرون:6|النصر:3|المسد:5|الإخلاص:4|الفلق:5|الناس:6";
+/* ---------- Rihlat al-Salam ---------- */
+var SURAHS=SURAHS_RAW.split('|').map(function(x){var p=x.split(':');return [p[0],+p[1]]});
+var AZ0=['سبحان الله','الحمد لله','لا إله إلا الله','الله أكبر','أستغفر الله','سبحان الله وبحمده','اللهم صلِّ وسلِّم على نبينا محمد','لا حول ولا قوة إلا بالله'];
+var CH={'مادية':['سقي ماء','إطعام وجبة','شراء مستلزم مدرسي','تبرع بمال'],'خفيفة':['إزالة أذى من الطريق','إطعام الطيور أو القطط','دعاء لشخص','ابتسامة أو كلمة طيبة']};
+var curS=1;
+function mkey(){return keyOf(dnow()).slice(0,7)}
+function wkey(){return keyOf(weekDates()[0])}
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+function logw(kind,text,ref){if(ref){var ex=S.log.filter(function(e){return e.ref===ref})[0];if(ex){ex.text=text;ex.t=Date.now();return}}S.log.unshift({t:Date.now(),kind:kind,text:text,ref:ref||''});S.log=S.log.slice(0,500)}
+function hubCard(title,sub,v){return h('button',{class:'dcard',onclick:function(){nav(v)}},h('div',{class:'dt'},title),sub?h('div',{class:'dp'},sub):null)}
+
+function salamView(){
+  var wrap=h('div'),H=S.had,w=wkey(),m=mkey();
+  var hs=H.wk===w&&H.n!=null?(H.done?'أتقنتِ حديث هذا الأسبوع':'الحديث '+(H.n+1)+' بانتظارك'):'لم تسحبي حديث هذا الأسبوع بعد';
+  var n=S.char.filter(function(e){return e.m===m}).length;
+  var qd=S.q.draw&&S.q.draw.m===m?'سورة الشهر: '+SURAHS[S.q.draw.no-1][0]:'لم تسحبي سورة هذا الشهر بعد';
+  wrap.append(hubCard('الأذكار','عدّاد مفتوح الاختيار وإجمالي الشهر','azkar'),
+    hubCard('الحديث الأسبوعي',hs,'hadith'),
+    hubCard('القرآن',qd,'quran'),
+    hubCard('الصدقة','هذا الشهر: '+n+' من 4','charity'),
+    hubCard('رحلة طلب العلم','الجمعة والأحد · المراحل والكتب والجلسات','talab'),
+    h('div',{class:'note'},'قادم: الصيام (عدّاد الصلاة موجود في اليوم).'));
+  return wrap;
+}
+
+function azkarView(){
+  var wrap=h('div'),m=mkey(),cm=S.az.m[m]||(S.az.m[m]={});
+  var names=AZ0.concat(S.az.names);
+  if(names.indexOf(S.az.sel)<0)S.az.sel=names[0];
+  var sel=h('select',{'aria-label':'الذكر'},names.map(function(x){return h('option',{value:x},x)}));sel.value=S.az.sel;
+  var num=h('div',{class:'bignum'},String(cm[S.az.sel]||0));
+  var tot=h('div',{class:'muted',style:'text-align:center'},'');
+  function upd(){num.textContent=String(cm[S.az.sel]||0)}
+  sel.addEventListener('change',function(){S.az.sel=sel.value;save();upd()});
+  var btn=h('button',{class:'bigbtn',type:'button','aria-label':'عدّ'},'سبّحي');
+  btn.addEventListener('click',function(){cm[S.az.sel]=(cm[S.az.sel]||0)+1;save();upd();try{navigator.vibrate&&navigator.vibrate(15)}catch(e){}});
+  var undo=h('button',{class:'btn ghost',type:'button',onclick:function(){if(cm[S.az.sel]>0){cm[S.az.sel]--;save();upd()}}},'\u200E−1');
+  var inp=h('input',{type:'text',placeholder:'أضيفي ذكراً آخر','aria-label':'ذكر جديد'});
+  var add=h('button',{class:'btn',type:'button',onclick:function(){var v=inp.value.trim();if(!v||names.indexOf(v)>=0)return;S.az.names.push(v);S.az.sel=v;save();render()}},'أضيفي');
+  wrap.append(h('div',{class:'tier',style:'text-align:center'},sel,num,btn,h('div',{class:'form',style:'justify-content:center;margin-top:10px'},undo)),
+    h('div',{class:'tier'},h('div',{class:'form'},h('div',{style:'flex:1'},inp),add)));
+  var rows=Object.keys(cm).filter(function(k){return cm[k]>0});
+  var sum=rows.reduce(function(a,k){return a+cm[k]},0);
+  var card=h('section',{class:'sec'},h('header',null,h('h2',null,'هذا الشهر'),h('span',null,sum+' مجموعاً')));
+  rows.forEach(function(k){card.append(h('div',{class:'row'},h('div',{class:'t'},k),h('b',null,String(cm[k]))))});
+  if(!rows.length)card.append(h('div',{class:'row'},h('div',{class:'t muted'},'لا عدّ بعد هذا الشهر.')));
+  wrap.append(card);return wrap;
+}
+
+function drawHadith(reroll){
+  var H=S.had,w=wkey();
+  var pool=[];for(var i=0;i<HADITH.length;i++)if(H.used.indexOf(i)<0&&i!==H.n)pool.push(i);
+  if(!pool.length){H.used=[];for(var j=0;j<HADITH.length;j++)if(j!==H.n)pool.push(j)}
+  var n=pick(pool);H.used.push(n);H.n=n;H.wk=w;H.done=false;H.rr=reroll?1:0;save();render();
+}
+function hadithView(){
+  var wrap=h('div'),H=S.had,w=wkey(),has=H.wk===w&&H.n!=null;
+  if(!has){
+    wrap.append(h('div',{class:'tier',style:'text-align:center'},h('div',{class:'dt'},'حديث هذا الأسبوع'),h('div',{class:'muted',style:'margin:6px 0 12px'},'من الأربعين النووية. سُحب '+H.used.length+' من '+HADITH.length+'، ولا يتكرر حديث حتى تنتهي الدورة.'),h('button',{class:'btn',onclick:function(){drawHadith(false)}},'اسحبي الحديث')));
+    return wrap;
+  }
+  var n=H.n;
+  wrap.append(h('div',{class:'tier'},h('div',{class:'muted'},'الحديث '+(n+1)+' من '+HADITH.length),h('div',{class:'hadith'},HADITH[n])));
+  var bar=h('div',{class:'form',style:'justify-content:flex-start;flex-wrap:wrap;margin:8px 0'});
+  bar.append(h('button',{class:'btn'+(H.done?' ghost':''),onclick:function(){H.done=!H.done;if(H.done)logw('حديث','الحديث '+(n+1)+' من الأربعين النووية');save();render()}},H.done?'✓ أتقنته (تراجع)':'أتقنته'));
+  if(!H.rr&&!H.done)bar.append(h('button',{class:'btn ghost',onclick:function(){drawHadith(true)}},'أعيدي السحب (مرة واحدة)'));
+  wrap.append(bar);
+  var ta=h('textarea',{placeholder:'ماذا فهمتِ؟ ماذا ستطبّقين؟','aria-label':'ملاحظتي'});ta.value=H.notes[n]||'';
+  ta.addEventListener('input',function(){H.notes[n]=ta.value;save()});
+  wrap.append(h('label',{class:'f'},'ملاحظتي',ta));
+  return wrap;
+}
+
+function charityView(){
+  var wrap=h('div'),m=mkey(),list=S.char.filter(function(e){return e.m===m}),left=4-list.length;
+  var draw=function(cat){return function(){if(left<=0)return;S.char.unshift({id:Date.now(),m:m,t:Date.now(),cat:cat,text:pick(CH[cat]),done:false,note:''});save();render()}};
+  wrap.append(h('div',{class:'tier',style:'text-align:center'},h('div',{class:'dt'},'صدقة هذا الشهر: '+list.length+' من 4'),
+    h('div',{class:'muted',style:'margin:6px 0 12px'},left>0?'اسحبي متى شئتِ، وتبقى '+left+' سحبات':'اكتمل السحب هذا الشهر'),
+    h('div',{class:'form',style:'justify-content:center'},h('button',{class:'btn',disabled:left<=0,onclick:draw('مادية')},'سحب مادية'),h('button',{class:'btn',disabled:left<=0,onclick:draw('خفيفة')},'سحب خفيفة'))));
+  list.forEach(function(e){
+    var card=h('section',{class:'sec'},h('header',null,h('h2',null,e.text),h('span',null,e.cat+(e.done?' ✓':''))));
+    var ta=h('textarea',{style:'min-height:70px',placeholder:'اكتبي ملاحظتك بعد التنفيذ','aria-label':'ملاحظة الصدقة'});ta.value=e.note||'';
+    ta.addEventListener('input',function(){e.note=ta.value;save()});
+    var b=h('button',{class:'btn'+(e.done?' ghost':''),onclick:function(){e.done=!e.done;if(e.done)logw('صدقة',e.text+(e.note?': '+e.note:''));save();render()}},e.done?'تراجع':'تمّت');
+    card.append(h('div',{class:'stack'},ta,h('div',null,b)));wrap.append(card);
+  });
+  if(!list.length)wrap.append(h('div',{class:'muted',style:'text-align:center;margin:20px'},'لم تسحبي صدقة هذا الشهر بعد.'));
+  return wrap;
+}
+
+function drawSurah(reroll){
+  var Q=S.q,m=mkey(),cur=Q.draw&&Q.draw.m===m?Q.draw.no:null;
+  var pool=[];for(var i=1;i<=114;i++)if(Q.drawn.indexOf(i)<0&&i!==cur)pool.push(i);
+  if(!pool.length){Q.drawn=[];for(var j=1;j<=114;j++)if(j!==cur)pool.push(j)}
+  var no=pick(pool);Q.drawn.push(no);
+  Q.draw={m:m,no:no,steps:{},rr:reroll?((Q.draw&&Q.draw.m===m?Q.draw.rr:0)+1):0};save();render();
+}
+function quranView(){
+  var wrap=h('div'),Q=S.q,m=mkey(),d=Q.draw&&Q.draw.m===m?Q.draw:null;
+  if(!d)wrap.append(h('div',{class:'tier',style:'text-align:center'},h('div',{class:'dt'},'سورة الشهر'),h('div',{class:'muted',style:'margin:6px 0 12px'},'سورة واحدة تفهمينها وتتدبرينها وتطبقينها وتحفظينها.'),h('button',{class:'btn',onclick:function(){drawSurah(false)}},'اسحبي السورة')));
+  else{
+    var card=h('section',{class:'sec'},h('header',null,h('h2',null,'سورة '+SURAHS[d.no-1][0]),h('span',null,SURAHS[d.no-1][1]+' آية')));
+    [['fahm','أفهمها'],['tadabbur','أتدبرها'],['tatbiq','أطبّقها'],['hifz','أحفظها']].forEach(function(s){
+      var on=!!d.steps[s[0]];
+      card.append(h('div',{class:'row tap'+(on?' done':''),onclick:function(){d.steps[s[0]]=!on;if(!on&&['fahm','tadabbur','tatbiq','hifz'].every(function(k){return d.steps[k]}))logw('سورة','أتممتِ سورة '+SURAHS[d.no-1][0]);save();render()}},h('button',{type:'button',class:'chk','aria-pressed':on,'aria-label':s[1]},on?chkIcon():null),h('div',{class:'t'},s[1])));
+    });
+    var bar=h('div',{class:'stack'},h('div',{class:'form'},h('button',{class:'btn ghost',onclick:function(){curS=d.no;nav('surah')}},'صفحة السورة'),(d.rr||0)<2?h('button',{class:'btn ghost',onclick:function(){drawSurah(true)}},'أعيدي السحب ('+(2-(d.rr||0))+' متبقية)'):null));
+    card.append(bar);wrap.append(card);
+  }
+  wrap.append(h('button',{class:'btn ghost',style:'margin:8px 0',onclick:function(){nav('review')}},'مراجعتي'));
+  var list=h('section',{class:'sec'},h('header',null,h('h2',null,'السور'),h('span',null,'اضغطي لصفحة السورة')));
+  SURAHS.forEach(function(s,i){
+    var mem=Q.mem[i+1]||0;
+    list.append(h('div',{class:'row tap',onclick:function(){curS=i+1;nav('surah')}},h('div',{class:'t'},(i+1)+'. '+s[0],h('small',null,mem?'حفظتِ '+mem+' من '+s[1]:s[1]+' آية')),mem>=s[1]?h('span',{class:'late'},'✓'):null));
+  });
+  wrap.append(list);return wrap;
+}
+function surahView(){
+  var wrap=h('div'),Q=S.q,no=curS,s=SURAHS[no-1];
+  var cnt=h('b',{style:'font-size:26px'},'');var bar=h('div',{class:'pbar'},h('i'));
+  function upd(){var v=Q.mem[no]||0;cnt.textContent=v+' / '+s[1];bar.firstChild.style.width=Math.round(v/s[1]*100)+'%'}
+  function setm(v){Q.mem[no]=Math.max(0,Math.min(s[1],v));save();upd()}
+  upd();
+  wrap.append(h('div',{class:'tier'},h('div',{class:'muted'},'ما حفظتِه (آيات)'),cnt,bar,
+    h('div',{class:'form',style:'margin-top:10px;flex-wrap:wrap'},h('button',{class:'btn',onclick:function(){setm((Q.mem[no]||0)+5)}},'+5'),h('button',{class:'btn ghost',onclick:function(){setm((Q.mem[no]||0)+1)}},'+1'),h('button',{class:'btn ghost',onclick:function(){setm((Q.mem[no]||0)-1)}},'\u200E−1'))));
+  var rv=Q.rev[no];
+  var rb=h('button',{class:'btn ghost',onclick:function(){Q.rev[no]=keyOf(dnow());save();render()}},'راجعتها اليوم');
+  wrap.append(h('div',{class:'tier'},h('div',{class:'muted'},rv?'آخر مراجعة: '+fd(rv):'لم تراجعي هذه السورة بعد'),h('div',{style:'margin-top:8px'},rb)));
+  var ta=h('textarea',{placeholder:'ما فهمتِه وتأملتِه وما ستطبّقينه','aria-label':'ملاحظات السورة'});ta.value=Q.notes[no]||'';
+  ta.addEventListener('input',function(){Q.notes[no]=ta.value;save()});
+  wrap.append(h('label',{class:'f'},'ملاحظاتي',ta));return wrap;
+}
+function reviewView(){
+  var wrap=h('div'),Q=S.q,ids=Object.keys(Q.mem).filter(function(k){return Q.mem[k]>0}).map(Number);
+  ids.sort(function(a,b){return (Q.rev[a]||'')<(Q.rev[b]||'')?-1:1});
+  var card=h('section',{class:'sec'},h('header',null,h('h2',null,'مراجعتي'),h('span',null,'الأقدم مراجعة أولاً')));
+  ids.forEach(function(no){card.append(h('div',{class:'row'},h('div',{class:'t'},SURAHS[no-1][0],h('small',null,(Q.rev[no]?'آخر مراجعة '+Q.rev[no]:'لم تُراجَع بعد')+' · حفظتِ '+Q.mem[no])),h('button',{class:'btn',onclick:function(){Q.rev[no]=keyOf(dnow());save();render()}},'راجعتها')))});
+  if(!ids.length)card.append(h('div',{class:'row'},h('div',{class:'t muted'},'سجّلي ما حفظتِه في صفحة أي سورة لتظهر هنا.')));
+  wrap.append(card);return wrap;
+}
+
+/* ---------- Rihlat Talab al-Ilm ---------- */
+var PLAN=[
+ {id:0,title:'المرحلة صفر: تمهيد',books:[{id:'qasas',name:'رحلتي مع سورة القصص',sub:'دورة القصص للشيخ علاء حامد',st:'prog'}]},
+ {id:1,title:'المرحلة الأولى: تمهيدية',books:[{id:'majales',name:'المجالس العلمية لمهمات المسائل الاعتقادية والفقهية',sub:'يركّز على المسائل المهمة في العقيدة والطهارة والصلاة',links:[['رابط الشرح','https://t.me/AlmajalessAlelmeiya']]}]},
+ {id:2,title:'المرحلة الثانية: انتقالية',books:[
+  {id:'bidaya_fiqh',group:'الفقه',name:'بداية المتفقه',sub:'للشيخ وحيد عبد السلام بالي. الشرح المقترح: «الشرح المختصر لبداية المتفقه» للشيخ خالد الجهني',links:[['فقه العبادات','https://t.me/+Tlf--LzY2aG8N9L5'],['فقه المعاملات','https://t.me/+_kRlx71Bt4oxMDRk'],['فقه الأسرة','https://t.me/+HffcKXu65cRiMWNk'],['فقه الجنايات','https://t.me/+IuvsHzWZ1WcyMzk0']]},
+  {id:'bidaya_aqeeda',group:'العقيدة',name:'البداية في العقيدة',sub:'للشيخ وحيد عبد السلام بالي. الشرح المقترح: «الكلمات السديدة شرح البداية في العقيدة» للشيخ خالد الجهني',links:[['الرابط','https://t.me/+5aU55fMgjqUzM2M0']]}]},
+ {id:3,title:'المرحلة الثالثة: تأسيسية',tracks:[
+  {id:'aqeeda',name:'العقيدة أو التوحيد',note:'تنبيه من الخطة الأصلية: يُوصى بدراسة مباحث الإيمان والكفر، والعذر بالجهل، والعقيدة في الصحابة، والإمامة والخلافة، والاتباع وعدم الابتداع من مصادر منضبطة.',books:[
+    {id:'usul_iman',choice:'a1',name:'أصول الإيمان في ضوء الكتاب والسنة',sub:'لنخبة من العلماء، بشرح المهندس علاء حامد (اللبنة الأولى)'},
+    {id:'intima',choice:'a1',name:'ماذا يعني انتمائي لأهل السنة والجماعة؟',sub:'للشيخ عادل العزازي (بديل اللبنة الأولى)'},
+    {id:'ashqar',name:'سلسلة «العقيدة في ضوء الكتاب والسنة»',sub:'للشيخ عمر سليمان الأشقر (اللبنة الثانية)'}]},
+  {id:'fiqh',name:'الفقه',books:[
+    {id:'muyassar',choice:'f1',name:'الفقه الميسر',sub:'للمهندس علاء حامد (الخيار الأول)',links:[['قائمة الدروس','https://youtube.com/playlist?list=PL1i_D1Vw3d5P5Q6IHHW22JHrnLCwm60Bn&si=nTpPwaagP0Arsb-4']]},
+    {id:'tamam',choice:'f1',name:'تمام المنة في فقه الكتاب وصحيح السنة',sub:'للشيخ عادل يوسف العزازي (الخيار البديل)',links:[['قائمة الدروس','https://youtube.com/playlist?list=PLw6jwWVRDobZoaoCLFy8i9zgRGpPEPm4W&si=F61yD4l69kubG89h']]}]},
+  {id:'hadith',name:'الحديث',books:[
+    {id:'arbaoon',hfl:1,name:'الأربعون النووية',sub:'مع شرح الشيخ ابن عثيمين'},
+    {id:'riyad',hfl:1,name:'رياض الصالحين',sub:'مع شرح الشيخ ابن عثيمين، بعد إتمام الأربعين'}]},
+  {id:'seerah',name:'السيرة',books:[
+    {id:'seerah1',name:'المختصر في السيرة النبوية',sub:'للشيخ موسى بن راشد العازمي',links:[['شرحه على يوتيوب','https://youtube.com/playlist?list=PLHA7vmb8w9Dho1xu3fZHsL20WT1FCZv8m&si=oGOhsT4_SpT9xKYa']]}]},
+  {id:'usul',name:'أصول الفقه',books:[{id:'usul1',name:'الأصول من علم الأصول',sub:'للشيخ ابن عثيمين'}]},
+  {id:'mustalah',name:'مصطلح الحديث',books:[{id:'bayquni',name:'المنظومة البيقونية',sub:'للشيخ ابن عثيمين. من الشروح المذكورة: شرح الدكتور عبد الكريم الخضير'}]}]}
+];
+var ST_LABEL={none:'لم أبدأ',prog:'قيد الدراسة',done:'مكتمل'};
+var curStg=0,curBk='qasas',curL=null;
+function allBooks(st){var o=[];if(st.books)st.books.forEach(function(b){o.push(b)});if(st.tracks)st.tracks.forEach(function(t){t.books.forEach(function(b){o.push(b)})});return o}
+function findBook(id){var r=null;PLAN.forEach(function(st){allBooks(st).forEach(function(b){if(b.id===id)r=b})});return r}
+function getB(id){var T=S.tl;if(!T.books[id]){var d=findBook(id);T.books[id]={st:(d&&d.st)||'none',lessons:[],url:'',ev:'',fl:{}}}var b=T.books[id];if(!Array.isArray(b.lessons))b.lessons=[];if(!b.fl)b.fl={};return b}
+function bpct(id){var b=getB(id);if(b.st==='done')return 100;var n=b.lessons.length;return n?Math.round(b.lessons.filter(function(l){return l.done}).length/n*100):0}
+function groupsOf(books){var g={},o=[];books.forEach(function(b){var k=b.choice||b.id;if(!g[k]){g[k]=[];o.push(g[k])}g[k].push(b.id)});return o}
+function gpct(g){return Math.max.apply(null,g.map(bpct))}
+function bookSetPct(books){var gs=groupsOf(books);return gs.length?Math.round(gs.reduce(function(a,g){return a+gpct(g)},0)/gs.length):0}
+function setDone(books){return groupsOf(books).every(function(g){return g.some(function(id){return getB(id).st==='done'})})}
+function stageDone(i){return setDone(allBooks(PLAN[i]))}
+function stageOpen(i){return i===0||stageDone(i-1)||!!S.tl.open[i]}
+function trackPending(t){return !setDone(t.books)}
+function nextIn(books){
+  for(var i=0;i<books.length;i++){var b=getB(books[i].id);if(b.st==='done')continue;
+    var ls=b.lessons.filter(function(l){return !l.done}).sort(function(a,c){return (a.num||0)-(c.num||0)});
+    if(ls.length)return {b:books[i].id,l:ls[0]}}
+  return null}
+function ordBooks(books){return books.slice().sort(function(a,c){return (getB(a.id).st==='prog'?0:1)-(getB(c.id).st==='prog'?0:1)})}
+function addDays(k,n){return keyOf(new Date(Date.parse(k+'T00:00:00Z')+n*864e5))}
+function safeUrl(u){return typeof u==='string'&&/^https:\/\//.test(u)}
+function linkEl(label,u){return safeUrl(u)?h('a',{class:'lk',href:u,target:'_blank',rel:'noopener noreferrer'},label):null}
+function stageIdx(){for(var i=0;i<4;i++)if(!stageDone(i))return i;return 3}
+
+function drawTrack(reroll){
+  var T=S.tl,k=keyOf(dnow()),tr=PLAN[3].tracks,avail=tr.filter(trackPending).map(function(t){return t.id});
+  if(!avail.length)return;
+  var cur=T.draw&&T.draw.k===k?T.draw.track:null;
+  var pool=avail.filter(function(id){return T.used.indexOf(id)<0&&id!==cur});
+  if(!pool.length){T.used=[];pool=avail.filter(function(id){return id!==cur});if(!pool.length)pool=avail.slice()}
+  var id=pick(pool);T.used.push(id);
+  T.draw={k:k,track:id,rr:reroll?1:0};save();render();
+}
+function openSession(bid,l){curBk=bid;curL=l;nav('tsess')}
+function talabView(){
+  var wrap=h('div'),T=S.tl,k=keyOf(dnow()),dow=dnow().getUTCDay(),study=T.days.indexOf(dow)>=0;
+  var si=stageIdx(),card=h('div',{class:'tier'});
+  card.append(h('div',{class:'dt'},study?'اليوم يوم دراسة':'ليس اليوم من أيام الدراسة'),h('div',{class:'muted'},'أيام الدراسة: الجمعة والأحد. يمكنك إضافة جلسة في أي يوم.'));
+  if(T.rest[k]){card.append(h('div',{class:'muted',style:'margin-top:8px'},'جعلتِ اليوم راحة، ولا يُحسب فائتاً ولا مكتملاً.'),h('div',{style:'margin-top:8px'},h('button',{class:'btn ghost',onclick:function(){delete T.rest[k];save();render()}},'إلغاء الراحة')))}
+  else{
+    var nx=null,label='';
+    if(stageOpen(3)&&!stageDone(3)){
+      var d=T.draw&&T.draw.k===k?T.draw:null;
+      if(!d)card.append(h('div',{style:'margin-top:10px'},h('button',{class:'btn',onclick:function(){drawTrack(false)}},'اسحبي مسار اليوم')),h('div',{class:'muted',style:'margin-top:6px'},'سُحب '+T.used.length+' من 6، ولا يتكرر مسار حتى تنتهي الدورة.'));
+      else{
+        var tr=PLAN[3].tracks.filter(function(t){return t.id===d.track})[0];label='مسار اليوم: '+tr.name;
+        card.append(h('div',{class:'dt',style:'margin-top:10px'},label));
+        nx=nextIn(ordBooks(tr.books));
+        if(!d.rr)card.append(h('div',{style:'margin-top:6px'},h('button',{class:'btn ghost',onclick:function(){drawTrack(true)}},'أعيدي السحب (مرة واحدة)')));
+      }
+      if(d&&!nx)card.append(h('div',{class:'muted',style:'margin-top:8px'},'لا درس مضاف لهذا المسار. افتحي كتابه وأضيفي الدروس.'),h('div',{style:'margin-top:6px'},h('button',{class:'btn ghost',onclick:function(){var t0=PLAN[3].tracks.filter(function(t){return t.id===d.track})[0];curBk=t0.books[0].id;nav('tbook')}},'فتح الكتاب')));
+    }else{
+      label=PLAN[si].title;card.append(h('div',{class:'dt',style:'margin-top:10px'},label));
+      nx=nextIn(ordBooks(allBooks(PLAN[si])));
+      if(!nx)card.append(h('div',{class:'muted',style:'margin-top:8px'},'لا درس مضاف بعد. افتحي كتاب المرحلة وأضيفي دروسه، أو اضغطي «مكتمل» إن أنهيتِه.'),h('div',{style:'margin-top:6px'},h('button',{class:'btn ghost',onclick:function(){curStg=si;nav('tplan')}},'فتح الخطة')));
+    }
+    if(nx){var bd=findBook(nx.b);card.append(h('div',{class:'muted',style:'margin-top:8px'},'الدرس التالي في «'+bd.name+'»'),h('div',{class:'dt'},(nx.l.num?nx.l.num+'. ':'')+nx.l.title),h('div',{style:'margin-top:8px'},h('button',{class:'btn',onclick:function(){openSession(nx.b,nx.l)}},'ابدئي جلسة الدراسة')))}
+    card.append(h('div',{style:'margin-top:12px'},h('button',{class:'btn ghost',onclick:function(){T.rest[k]=true;save();render()}},'راحة اليوم')));
+  }
+  wrap.append(card);
+  var navb=h('div',{class:'form',style:'flex-wrap:wrap;margin:8px 0'});
+  navb.append(h('button',{class:'btn ghost',onclick:function(){nav('tplan')}},'الخطة'),h('button',{class:'btn ghost',onclick:function(){nav('treview')}},'المراجعة'),h('button',{class:'btn ghost',onclick:function(){nav('tlog')}},'السجل'));
+  wrap.append(navb);
+  var prog=h('section',{class:'sec'},h('header',null,h('h2',null,'التقدم'),h('span',null,'بحسب الدروس التي أضفتِها')));
+  PLAN.forEach(function(st,i){var p=bookSetPct(allBooks(st));
+    prog.append(h('div',{class:'row tap',onclick:function(){curStg=i;nav('tplan')}},h('div',{class:'t'},st.title,h('div',{class:'pbar'},h('i',{style:'width:'+p+'%'})),(!stageOpen(i)?h('small',null,'مقفلة حتى تكتمل السابقة'):null)),h('b',null,p+'%')))});
+  wrap.append(prog);
+  wrap.append(h('div',{class:'note'},'الخطة قابلة للتخفيف والتعديل بحسب الاستطاعة. إتمام المراحل يعتمد على الدروس التي تضيفينها، ولا توجد مدة إنجاز محددة.'));
+  return wrap;
+}
+
+function bookRow(b){
+  var d=getB(b.id),p=bpct(b.id);
+  return h('div',{class:'row tap',onclick:function(){curBk=b.id;nav('tbook')}},h('div',{class:'t'},b.name,h('small',null,ST_LABEL[d.st]+(d.lessons.length?' · '+d.lessons.filter(function(l){return l.done}).length+'/'+d.lessons.length+' دروس':'')),h('div',{class:'pbar'},h('i',{style:'width:'+p+'%'}))),h('b',null,p+'%'));
+}
+function planView(){
+  var wrap=h('div'),T=S.tl;
+  PLAN.forEach(function(st,i){
+    var open=stageOpen(i),card=h('section',{class:'sec'},h('header',null,h('h2',null,st.title),h('span',null,open?(stageDone(i)?'مكتملة':'مفتوحة'):'مقفلة')));
+    if(!open)card.append(h('div',{class:'stack'},h('div',{class:'muted'},'تُفتح بعد اكتمال المرحلة السابقة.'),h('div',null,h('button',{class:'btn ghost',onclick:function(){T.open[i]=true;save();render()}},'فتحها يدوياً'))));
+    else{
+      if(st.books)st.books.forEach(function(b){card.append(bookRow(b))});
+      if(st.tracks)st.tracks.forEach(function(t){card.append(h('div',{class:'dmonth',style:'margin:8px 16px 0'},t.name+' · '+bookSetPct(t.books)+'%'));t.books.forEach(function(b){card.append(bookRow(b))})});
+      if(T.open[i]&&i>0&&!stageDone(i-1))card.append(h('div',{class:'stack'},h('button',{class:'btn ghost',onclick:function(){delete T.open[i];save();render()}},'إعادة قفلها')));
+    }
+    wrap.append(card);
+  });
+  return wrap;
+}
+
+function bookView(){
+  var wrap=h('div'),bd=findBook(curBk),b=getB(curBk);
+  wrap.append(h('div',{class:'tier'},h('div',{class:'dt'},bd.name),h('div',{class:'muted'},bd.sub||''),
+    h('div',null,(bd.links||[]).map(function(x){return linkEl(x[0],x[1])}),b.url?linkEl('الرابط الذي أضفتِه',b.url):null)));
+  if(!(bd.links&&bd.links.length)&&!b.url)wrap.append(h('div',{class:'muted',style:'margin:4px 2px'},'أضف الرابط هنا'));
+  var url=h('input',{type:'text',placeholder:'https:// رابط الشرح الذي تختارينه','aria-label':'رابط',value:b.url||'',dir:'ltr'});
+  url.addEventListener('change',function(){var v=url.value.trim();if(v&&!safeUrl(v)){url.value=b.url||'';return}b.url=v;save();render()});
+  var sel=h('select',{'aria-label':'حالة الكتاب'},['none','prog','done'].map(function(x){return h('option',{value:x},ST_LABEL[x])}));sel.value=b.st;
+  sel.addEventListener('change',function(){b.st=sel.value;save();render()});
+  wrap.append(h('div',{class:'tier'},h('label',{class:'f'},'الحالة',sel),h('label',{class:'f'},'رابط الشرح',url)));
+  if(bd.hfl){var fb=h('div',{class:'tier'},h('div',{class:'muted'},'متابعة الأحاديث (كل واحدة مستقلة)'));
+    [['read','القراءة'],['hifz','الحفظ'],['rev','مراجعة الأحاديث']].forEach(function(f){var on=!!b.fl[f[0]];fb.append(h('div',{class:'row tap'+(on?' done':''),onclick:function(){b.fl[f[0]]=!on;save();render()}},h('button',{type:'button',class:'chk','aria-pressed':on,'aria-label':f[1]},on?chkIcon():null),h('div',{class:'t'},f[1])))});
+    wrap.append(fb)}
+  var ev=h('textarea',{style:'min-height:80px',placeholder:'اختياري: الأدلة التي تريدين حفظها من هذا الكتاب','aria-label':'الأدلة'});ev.value=b.ev||'';
+  ev.addEventListener('input',function(){b.ev=ev.value;save()});
+  wrap.append(h('label',{class:'f'},'الأدلة التي أريد حفظها',ev));
+  var card=h('section',{class:'sec'},h('header',null,h('h2',null,'الدروس'),h('span',null,b.lessons.filter(function(l){return l.done}).length+'/'+b.lessons.length)));
+  b.lessons.slice().sort(function(a,c){return (a.num||0)-(c.num||0)}).forEach(function(l){
+    card.append(h('div',{class:'row tap'+(l.done?' done':''),onclick:function(){openSession(curBk,l)}},h('div',{class:'chk',style:'pointer-events:none'},l.done?chkIcon():null),h('div',{class:'t'},(l.num?l.num+'. ':'')+l.title)));
+  });
+  if(!b.lessons.length)card.append(h('div',{class:'row'},h('div',{class:'t muted'},'لا دروس بعد. أضيفي الدروس التي تريدين دراستها.')));
+  var ti=h('input',{type:'text',placeholder:'عنوان الدرس','aria-label':'عنوان الدرس'}),ur=h('input',{type:'text',placeholder:'رابط الدرس (اختياري)',dir:'ltr','aria-label':'رابط الدرس'});
+  var add=h('button',{class:'btn',onclick:function(){var v=ti.value.trim();if(!v)return;var u=ur.value.trim();
+    var mx=b.lessons.reduce(function(a,l){return Math.max(a,l.num||0)},0);
+    b.lessons.push({id:Date.now()+'-'+Math.floor(Math.random()*1000),num:mx+1,title:v,url:safeUrl(u)?u:'',note:'',ev:'',done:false,steps:{},rv:'',mrv:''});save();render()}},'أضيفي الدرس');
+  card.append(h('div',{class:'stack'},ti,ur,h('div',null,add)));
+  wrap.append(card);return wrap;
+}
+
+var STEPS=[['1','استماع أو مشاهدة الشرح'],['2','قراءة الدرس أو الجزء المقابل من الكتاب'],['3','تدوين الفوائد أو الملاحظات'],['4','مراجعة الدرس'],['5','حفظ الدليل أو الحديث (إن وُجد)'],['6','أُنجز الدرس']];
+function sessionView(){
+  var wrap=h('div'),l=curL,bd=findBook(curBk),b=getB(curBk);
+  if(!l)return h('div',null,h('div',{class:'muted'},'لا درس محدد.'));
+  wrap.append(h('div',{class:'tier'},h('div',{class:'muted'},bd.name),h('div',{class:'dt'},(l.num?l.num+'. ':'')+l.title),h('div',null,linkEl('رابط الدرس',l.url),(bd.links||[]).slice(0,4).map(function(x){return linkEl(x[0],x[1])}),b.url?linkEl('رابط الشرح',b.url):null)));
+  var card=h('section',{class:'sec'},h('header',null,h('h2',null,'خطوات الجلسة')));
+  STEPS.forEach(function(s){var on=!!l.steps[s[0]];card.append(h('div',{class:'row tap'+(on?' done':''),onclick:function(){l.steps[s[0]]=!on;if(s[0]==='6')l.done=!on;save();render()}},h('button',{type:'button',class:'chk','aria-pressed':on,'aria-label':s[1]},on?chkIcon():null),h('div',{class:'t'},s[1])))});
+  wrap.append(card);
+  var nt=h('textarea',{placeholder:'فوائدي وملاحظاتي على الدرس','aria-label':'ملاحظات'});nt.value=l.note||'';nt.addEventListener('input',function(){l.note=nt.value;save()});
+  var ev=h('textarea',{style:'min-height:70px',placeholder:'اختياري: الأدلة التي أريد حفظها','aria-label':'الأدلة'});ev.value=l.ev||'';ev.addEventListener('input',function(){l.ev=ev.value;save()});
+  wrap.append(h('label',{class:'f'},'ملاحظاتي',nt),h('label',{class:'f'},'الأدلة التي أريد حفظها',ev));
+  wrap.append(h('div',{class:'form',style:'margin:10px 0'},h('button',{class:'btn',onclick:function(){
+    var k=keyOf(dnow());S.tl.sessions.unshift({k:k,t:Date.now(),b:curBk,bn:bd.name,lt:l.title,note:l.note||''});S.tl.sessions=S.tl.sessions.slice(0,400);
+    day(k).done.talab=true;
+    if(l.done&&!l.rv)l.rv=addDays(k,10);
+    logw('طلب علم',bd.name+': '+l.title);save();nav('talab')}},'إنهاء الجلسة')));
+  return wrap;
+}
+
+function reviewViewT(){
+  var wrap=h('div'),k=keyOf(dnow()),items=[],mem=[];
+  PLAN.forEach(function(st){allBooks(st).forEach(function(bd){var b=getB(bd.id);
+    b.lessons.forEach(function(l){if(l.done&&l.rv&&l.rv<=k)items.push({bd:bd,l:l});if(l.ev&&l.ev.trim()&&(!l.mrv||addDays(l.mrv,7)<=k))mem.push({label:bd.name+': '+l.title,o:l})});
+    if(b.ev&&b.ev.trim()&&(!b.mrv||addDays(b.mrv,7)<=k))mem.push({label:'أدلة «'+bd.name+'»',o:b})})});
+  var c1=h('section',{class:'sec'},h('header',null,h('h2',null,'مراجعة الدروس'),h('span',null,'كل 10 أيام')));
+  items.forEach(function(x){c1.append(h('div',{class:'row'},h('div',{class:'t'},x.l.title,h('small',null,x.bd.name)),h('div',{class:'form'},h('button',{class:'btn',onclick:function(){x.l.rv=addDays(k,10);save();render()}},'راجعتها'),h('button',{class:'btn ghost',onclick:function(){x.l.rv=addDays(k,3);save();render()}},'أجّلي'))))});
+  if(!items.length)c1.append(h('div',{class:'row'},h('div',{class:'t muted'},'لا دروس مستحقة للمراجعة الآن.')));
+  var c2=h('section',{class:'sec'},h('header',null,h('h2',null,'مراجعة الحفظ'),h('span',null,'أسبوعياً')));
+  mem.forEach(function(x){c2.append(h('div',{class:'row'},h('div',{class:'t'},x.label,h('small',null,(x.o.ev||'').slice(0,80))),h('button',{class:'btn',onclick:function(){x.o.mrv=k;save();render()}},'راجعت حفظي')))});
+  if(!mem.length)c2.append(h('div',{class:'row'},h('div',{class:'t muted'},'لا أدلة مستحقة للمراجعة. اكتبي الأدلة التي تريدين حفظها في صفحة الدرس أو الكتاب.')));
+  wrap.append(c1,c2);return wrap;
+}
+function logView(){
+  var wrap=h('div'),T=S.tl,card=h('section',{class:'sec'},h('header',null,h('h2',null,'سجل الدراسة'),h('span',null,T.sessions.length+' جلسة')));
+  T.sessions.forEach(function(s){card.append(h('div',{class:'row'},h('div',{class:'t'},s.lt,h('small',null,fd(s.k)+' · '+s.bn+(s.note?' · '+s.note.slice(0,60):'')))))});
+  if(!T.sessions.length)card.append(h('div',{class:'row'},h('div',{class:'t muted'},'لا جلسات بعد.')));
+  var ks=Object.keys(T.rest).sort().reverse();
+  if(ks.length)wrap.append(h('div',{class:'muted',style:'margin:4px 2px'},'أيام الراحة: '+ks.slice(0,10).join('، ')));
+  wrap.append(card);return wrap;
+}
+
+/* ---------- Health & beauty ---------- */
+var FCAT=[['b','الفطور'],['s','السلطة'],['d','المشروب']];
+var perOk=false;
+function weekStartOf(k){return addDays(k,-new Date(Date.parse(k+'T00:00:00Z')).getUTCDay())}
+function foodTarget(){var k=keyOf(dnow());return dnow().getUTCDay()===6?addDays(k,1):wkey()}
+function foodOf(wk){return (S.food.w[wk])||null}
+function drawFood(cat,reroll){
+  var F=S.food,key=foodTarget(),list=F.lists[cat];if(!list.length)return;
+  var W=F.w[key]||(F.w[key]={rr:{}});if(!W.rr)W.rr={};
+  var cur=W[cat],used=F.used[cat];
+  var pool=list.filter(function(x){return used.indexOf(x)<0&&x!==cur});
+  if(!pool.length){F.used[cat]=used=[];pool=list.filter(function(x){return x!==cur});if(!pool.length)pool=list.slice()}
+  var it=pick(pool);used.push(it);W[cat]=it;if(reroll)W.rr[cat]=(W.rr[cat]||0)+1;
+  var name=FCAT.filter(function(c){return c[0]===cat})[0][1];
+  logw('طعام',name+': '+it,key+cat);
+  var wk=Object.keys(F.w).sort();while(wk.length>12)delete F.w[wk.shift()];
+  save();render();
+}
+function healthView(){
+  var wrap=h('div'),W=foodOf(wkey()),per=S.per.cyc.length;
+  wrap.append(hubCard('قرعة الغذاء',W&&(W.b||W.s||W.d)?'هذا الأسبوع: '+[W.b,W.s,W.d].filter(Boolean).join(' · '):'ثلاث سحبات كل سبت: الفطور والسلطة والمشروب','food'),
+    hubCard('Glow up','Goals · Daily care · Weekly · Monthly','glow'),
+    hubCard('الدورة','🔒 محمية بكلمة مرور','period'),
+    h('div',{class:'note'},'الماء وعدّاد المشي في صفحة اليوم.'));
+  return wrap;
+}
+function foodView(){
+  var wrap=h('div'),F=S.food,key=foodTarget(),sat=dnow().getUTCDay()===6,W=F.w[key]||{rr:{}},cur=foodOf(wkey())||{};
+  wrap.append(h('div',{class:'muted',style:'margin:4px 2px'},sat?'اليوم السبت: تسحبين اختيارات الأسبوع القادم.':'تُسحب الاختيارات يوم السبت. إن لم تسحبي فيمكنك السحب الآن لهذا الأسبوع.'));
+  FCAT.forEach(function(c){
+    var cat=c[0],list=F.lists[cat],rr=(W.rr&&W.rr[cat])||0,has=!!W[cat],can=sat||!foodOf(wkey())||!cur[cat]||true;
+    var card=h('section',{class:'sec'},h('header',null,h('h2',null,c[1]),h('span',null,list.length+' في القائمة')));
+    card.append(h('div',{class:'row'},h('div',{class:'t'},has?W[cat]:'لم يُسحب بعد',has?h('small',null,sat?'للأسبوع القادم':'لهذا الأسبوع'):null)));
+    var bar=h('div',{class:'form',style:'padding:6px 16px 0;flex-wrap:wrap'});
+    if(!has)bar.append(h('button',{class:'btn',disabled:!list.length,onclick:function(){drawFood(cat,false)}},'اسحبي'));
+    else if(rr<2)bar.append(h('button',{class:'btn ghost',onclick:function(){drawFood(cat,true)}},'أعيدي السحب ('+(2-rr)+' متبقية)'));
+    card.append(bar);
+    var ta=h('textarea',{style:'min-height:70px',placeholder:'الصقي عناصر القائمة، كل عنصر في سطر','aria-label':'قائمة '+c[1]});
+    var add=h('button',{class:'btn ghost',onclick:function(){ta.value.split('\n').map(function(x){return x.trim()}).filter(Boolean).forEach(function(x){if(list.indexOf(x)<0)list.push(x)});save();render()}},'أضيفي للقائمة');
+    card.append(h('div',{class:'stack'},ta,h('div',null,add)));
+    list.forEach(function(x,i){card.append(h('div',{class:'row'},h('div',{class:'t'},x),h('button',{class:'btn ghost',onclick:function(){list.splice(i,1);F.used[cat]=F.used[cat].filter(function(u){return u!==x});save();render()}},'حذف')))});
+    wrap.append(card);
+  });
+  wrap.append(h('div',{class:'note'},'لا يتكرر عنصر حتى تنتهي القائمة. اختياراتك تظهر في صفحة اليوم وتُسجَّل في المحفظة لاحقاً.'));
+  return wrap;
+}
+
+function shrink(file,cb){
+  var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){
+    var s=Math.min(1,520/im.width),c=document.createElement('canvas');c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);
+    c.getContext('2d').drawImage(im,0,0,c.width,c.height);cb(c.toDataURL('image/jpeg',.72))};im.src=r.result};r.readAsDataURL(file)}
+var glowEdit=false;
+var GDAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+var GPARTS=[['hair','Hair'],['body','Body'],['face','Face'],['teeth','Teeth']];
+function glowDefaults(){
+  var it=function(p,a){return a.map(function(t,i){return {id:p+i,t:t}})};
+  return {
+    goals:it('g',['Healthy white teeth','Waist 62 cm','Thick healthy hair','Clear glass skin']),
+    daily:{
+      hair:it('h',['مساج فروة الرأس','سبراي إكليل الجبل','ترطيب الأطراف وتمشيط الشعر','لف الشعر قبل النوم']),
+      body:it('b',['الترطيب المستمر للبشرة والجسم بعد الاستحمام']),
+      face:it('f',['الصباح: غسول + مرطب + واقي شمسي + منقوع إكليل الجبل للرموش','المساء: غسول + مرطب + غواشا تكنيك','زيت خروع للرموش وإثمد قبل النوم']),
+      teeth:it('t',['تفريش الأسنان مرتين يومياً (صباحاً ومساءً)'])},
+    week:[
+      {hair:'تزييت الشعر',face:'جليكوليك أسيد',body:'تقشير جاف + جليكوليك مفاصل + صابونية'},
+      {hair:'',face:'باتوكسيل',body:'كريم كنتا المغربي للمفاصل'},
+      {hair:'',face:'جليكوليك أسيد',body:'جليكوليك أسيد للمفاصل'},
+      {hair:'شامبو + قهوة',face:'باتوكسيل',body:'تقشير جاف + كريم كنتا + صابونية'},
+      {hair:'',face:'جليكوليك أسيد',body:'جليكوليك أسيد للمفاصل'},
+      {hair:'سدر / مشاط (بالتبديل)',face:'',body:'سكراب للجسم + كريم كنتا + صابونية'},
+      {hair:'ترطيب وعناية خفيفة',face:'راحة وترطيب',body:'راحة وترطيب'}],
+    monthly:[]};
+}
+function glowSec(title,sub){return h('section',{class:'sec'},h('header',null,h('h2',{dir:'auto'},title),sub?h('span',null,sub):null))}
+function glowRow(label,on,fn,small){
+  return h('div',{class:'row tap'+(on?' done':''),onclick:fn},h('button',{type:'button',class:'chk','aria-pressed':on,'aria-label':label},on?chkIcon():null),h('div',{class:'t'},label,small?h('small',null,small):null));
+}
+function glowView(){
+  var wrap=h('div'),G=S.glow,k=keyOf(dnow()),d=day(k),dow=dnow().getUTCDay(),mk=k.slice(0,7);
+  wrap.append(h('div',{class:'form',style:'justify-content:flex-end;margin:2px 0 6px'},h('button',{class:'btn ghost',type:'button',onclick:function(){glowEdit=!glowEdit;render()}},glowEdit?'Done':'Edit')));
+  // Goals
+  var gs=glowSec('Goals','yearly');
+  G.goals.forEach(function(g,i){
+    if(glowEdit){var inp=h('input',{type:'text',value:g.t,dir:'auto','aria-label':'goal'});inp.addEventListener('input',function(){g.t=inp.value;save()});
+      gs.append(h('div',{class:'row'},h('div',{class:'t'},inp),h('button',{class:'btn ghost',type:'button',onclick:function(){G.goals.splice(i,1);save();render()}},'حذف')))}
+    else{var on=!!G.done[g.id];gs.append(glowRow(g.t,on,function(){G.done[g.id]=!on;save();render()}))}
+  });
+  if(glowEdit){var ng=h('input',{type:'text',placeholder:'New goal',dir:'auto'});gs.append(h('div',{class:'stack'},ng,h('div',null,h('button',{class:'btn',type:'button',onclick:function(){var v=ng.value.trim();if(!v)return;G.goals.push({id:'g'+Date.now(),t:v});save();render()}},'أضيفي'))))}
+  wrap.append(gs);
+  // Daily care
+  GPARTS.forEach(function(p){
+    var items=G.daily[p[0]]||(G.daily[p[0]]=[]),c=glowSec(p[1],'Daily care');
+    items.forEach(function(x,i){
+      if(glowEdit){var inp=h('input',{type:'text',value:x.t,dir:'auto','aria-label':p[1]});inp.addEventListener('input',function(){x.t=inp.value;save()});
+        c.append(h('div',{class:'row'},h('div',{class:'t'},inp),h('button',{class:'btn ghost',type:'button',onclick:function(){items.splice(i,1);save();render()}},'حذف')))}
+      else{var key='gl_'+x.id,on=!!d.done[key];c.append(glowRow(x.t,on,function(){d.done[key]=!on;save();render()}))}
+    });
+    if(glowEdit){var ni=h('input',{type:'text',placeholder:'New item',dir:'auto'});c.append(h('div',{class:'stack'},ni,h('div',null,h('button',{class:'btn',type:'button',onclick:function(){var v=ni.value.trim();if(!v)return;items.push({id:'u'+Date.now(),t:v});save();render()}},'أضيفي'))))}
+    else if(!items.length)c.append(h('div',{class:'row'},h('div',{class:'t muted'},'No items yet. Use Edit to add.')));
+    wrap.append(c);
+  });
+  // Weekly routine
+  var W=G.week[dow]||{},wt=glowSec('Weekly routine','اليوم: '+GDAYS[dow]);
+  if(!glowEdit){
+    [['hair','Hair'],['face','Face'],['body','Body']].forEach(function(p){
+      if(!W[p[0]])return;var key='glw_'+p[0],on=!!d.done[key];
+      wt.append(glowRow(W[p[0]],on,function(){d.done[key]=!on;save();render()},p[1]));
+    });
+    if(!W.hair&&!W.face&&!W.body)wt.append(h('div',{class:'row'},h('div',{class:'t muted'},'لا شيء اليوم.')));
+  }
+  wrap.append(wt);
+  var all=glowSec('All week','Sun to Sat');
+  G.week.forEach(function(w,i){
+    if(glowEdit){
+      var box=h('div',{class:'stack'},h('div',{class:'dmonth',style:'margin:0'},GDAYS[i]));
+      [['hair','Hair'],['face','Face'],['body','Body']].forEach(function(p){var inp=h('input',{type:'text',value:w[p[0]]||'',placeholder:p[1],dir:'auto','aria-label':GDAYS[i]+' '+p[1]});inp.addEventListener('input',function(){w[p[0]]=inp.value;save()});box.append(inp)});
+      all.append(box);
+    }else{
+      all.append(h('div',{class:'row'+(i===dow?' now':'')},h('div',{class:'t'},GDAYS[i],
+        h('small',null,'\u2066Hair\u2069: '+(w.hair||'-')),h('small',null,'\u2066Face\u2069: '+(w.face||'-')),h('small',null,'\u2066Body\u2069: '+(w.body||'-')))));
+    }
+  });
+  wrap.append(all);
+  // Monthly routine
+  var mc=glowSec('Monthly routine',mk);
+  G.monthly.forEach(function(x,i){
+    if(glowEdit){var inp=h('input',{type:'text',value:x.t,dir:'auto'});inp.addEventListener('input',function(){x.t=inp.value;save()});
+      mc.append(h('div',{class:'row'},h('div',{class:'t'},inp),h('button',{class:'btn ghost',type:'button',onclick:function(){G.monthly.splice(i,1);save();render()}},'حذف')))}
+    else{if(!x.done)x.done={};var on=!!x.done[mk];mc.append(glowRow(x.t,on,function(){x.done[mk]=!on;save();render()}))}
+  });
+  var nm=h('input',{type:'text',placeholder:'New monthly item',dir:'auto','aria-label':'monthly'});
+  if(glowEdit||!G.monthly.length){
+    if(!G.monthly.length&&!glowEdit)mc.append(h('div',{class:'row'},h('div',{class:'t muted'},'Nothing yet. Add items below (they reset each month).')));
+    mc.append(h('div',{class:'stack'},nm,h('div',null,h('button',{class:'btn',type:'button',onclick:function(){var v=nm.value.trim();if(!v)return;G.monthly.push({id:'m'+Date.now(),t:v,done:{}});save();render()}},'أضيفي'))));
+  }
+  wrap.append(mc);
+  // Hair photo
+  var ph=glowSec('Hair now','photo');
+  if(G.photo)ph.append(h('div',{style:'padding:10px 16px'},h('img',{src:G.photo,alt:'صورة شعري',style:'width:100%;border-radius:14px'})));
+  var fi=h('input',{type:'file',accept:'image/*','aria-label':'صورة الشعر'});
+  fi.addEventListener('change',function(){var f=fi.files&&fi.files[0];if(!f)return;shrink(f,function(u){G.photo=u;G.photoK=keyOf(dnow());save();render()})});
+  ph.append(h('div',{class:'stack'},G.photoK?h('div',{class:'muted'},'التاريخ: '+fd(G.photoK)):null,fi,G.photo?h('div',null,h('button',{class:'btn ghost',type:'button',onclick:function(){G.photo='';save();render()}},'حذف الصورة')):null));
+  wrap.append(ph);
+  return wrap;
+}
+
+/* period tracker (private) */
+function hash(s){var h1=0xdeadbeef,h2=0x41c6ce57;for(var i=0;i<s.length;i++){var c=s.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677)}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return String(4294967296*(2097151&h2)+(h1>>>0))}
+function fd(k){return '\u2066'+k+'\u2069'}
+function diffDays(a,b){return Math.round((Date.parse(b+'T00:00:00Z')-Date.parse(a+'T00:00:00Z'))/864e5)}
+function perEstimate(){
+  var c=S.per.cyc.slice().sort(function(a,b){return a.s<b.s?-1:1});if(!c.length)return null;
+  var gaps=[];for(var i=1;i<c.length;i++)gaps.push(diffDays(c[i-1].s,c[i].s));
+  gaps=gaps.filter(function(g){return g>=15&&g<=60}).slice(-6);
+  var len=gaps.length?Math.round(gaps.reduce(function(a,b){return a+b},0)/gaps.length):(S.per.len||28);
+  var last=c[c.length-1],next=addDays(last.s,len);
+  return {len:len,last:last,next:next,left:diffDays(keyOf(dnow()),next),inPeriod:!last.e&&diffDays(last.s,keyOf(dnow()))>=0&&diffDays(last.s,keyOf(dnow()))<12,day:diffDays(last.s,keyOf(dnow()))+1,n:gaps.length}
+}
+function perReminder(){var e=perEstimate();return e&&!e.inPeriod&&e.left===1}
+function periodView(){
+  var wrap=h('div'),P=S.per;
+  var msg=h('div',{class:'muted',role:'status'});
+  if(!P.h){
+    var a=h('input',{type:'password',placeholder:'كلمة مرور جديدة','aria-label':'كلمة المرور',autocomplete:'new-password'}),b=h('input',{type:'password',placeholder:'أعيدي كتابتها','aria-label':'تأكيد كلمة المرور'});
+    var go=h('button',{class:'btn',onclick:function(){if(a.value.length<4){msg.textContent='اختاري كلمة من 4 أحرف على الأقل.';return}if(a.value!==b.value){msg.textContent='الكلمتان غير متطابقتين.';return}P.h=hash(a.value);perOk=true;save();render()}},'تفعيل القفل');
+    wrap.append(h('div',{class:'tier'},h('div',{class:'dt'},'اختاري كلمة مرور'),h('div',{class:'muted',style:'margin:6px 0 10px'},'هذه الصفحة خاصة بك. اكتبي كلمة تتذكرينها، فلا أستطيع استرجاعها.'),h('div',{class:'stack',style:'padding:0'},a,b,h('div',null,go),msg)));
+    return wrap;
+  }
+  if(!perOk){
+    var pw=h('input',{type:'password',placeholder:'كلمة المرور','aria-label':'كلمة المرور',autocomplete:'current-password'});
+    var op=h('button',{class:'btn',onclick:function(){if(hash(pw.value)===P.h){perOk=true;render()}else{msg.textContent='كلمة المرور غير صحيحة.';pw.value=''}}},'فتح');
+    pw.addEventListener('keydown',function(e){if(e.key==='Enter')op.click()});
+    var rs=h('button',{class:'muted',style:'text-decoration:underline',onclick:function(){if(!rs.dataset.s){rs.dataset.s='1';rs.textContent='سيُمسح كل سجل الدورة. اضغطي مرة أخرى للتأكيد';return}S.per={h:'',cyc:[],len:28};save();render()}},'نسيتِ كلمة المرور؟ مسح هذه الصفحة');
+    wrap.append(h('div',{class:'tier'},h('div',{class:'dt'},'🔒 الدورة'),h('div',{class:'stack',style:'padding:10px 0 0'},pw,h('div',null,op),msg)),h('div',null,rs));
+    return wrap;
+  }
+  var e=perEstimate(),t=keyOf(dnow());
+  var card=h('div',{class:'tier',style:'text-align:center'});
+  if(!e)card.append(h('div',{class:'dt'},'لا سجل بعد'),h('div',{class:'muted'},'سجّلي أول دورة ليبدأ التقدير.'));
+  else if(e.inPeriod)card.append(h('div',{class:'dt'},'اليوم '+e.day+' من الدورة'),h('div',{class:'muted'},'وضع الراحة '+(S.rest?'مفعّل':'غير مفعّل')));
+  else card.append(h('div',{class:'bignum'},e.left>0?String(e.left):e.left===0?'اليوم':String(Math.abs(e.left))),h('div',{class:'muted'},e.left>0?'يوماً حتى الدورة المتوقعة ('+fd(e.next)+')':e.left===0?'الدورة متوقعة اليوم':'يوماً عن الموعد المتوقع ('+fd(e.next)+')'),h('div',{class:'muted',style:'font-size:12.5px'},'التقدير من '+(e.n?e.n+' فترات مسجّلة':'المعدل الافتراضي '+e.len+' يوماً')));
+  var bar=h('div',{class:'form',style:'justify-content:center;flex-wrap:wrap;margin-top:12px'});
+  if(e&&e.inPeriod)bar.append(h('button',{class:'btn',onclick:function(){e.last.e=t;S.rest=false;save();render()}},'انتهت الدورة'));
+  else bar.append(h('button',{class:'btn',onclick:function(){P.cyc.push({s:t,e:''});S.rest=true;save();render()}},'بدأت الدورة اليوم'));
+  card.append(bar);
+  if(!(e&&e.inPeriod))card.append(h('div',{class:'muted',style:'margin-top:8px;font-size:12.5px'},'عند البدء يُفعَّل وضع الراحة تلقائياً: يتوقف عدّاد الصلاة ولا تنكسر السلاسل.'));
+  wrap.append(card);
+  var ds=h('input',{type:'date','aria-label':'تاريخ بداية',value:t,dir:'ltr'});
+  wrap.append(h('div',{class:'tier'},h('div',{class:'muted'},'إضافة دورة سابقة (تاريخ البداية)'),h('div',{class:'form',style:'margin-top:8px'},h('div',{style:'flex:1'},ds),h('button',{class:'btn ghost',onclick:function(){if(ds.value&&!P.cyc.some(function(c){return c.s===ds.value})){P.cyc.push({s:ds.value,e:''});save();render()}}},'أضيفي'))));
+  var hist=h('section',{class:'sec'},h('header',null,h('h2',null,'سجلّي')));
+  P.cyc.slice().sort(function(a,b){return a.s<b.s?1:-1}).slice(0,12).forEach(function(c){hist.append(h('div',{class:'row'},h('div',{class:'t'},fd(c.s),h('small',null,c.e?'حتى '+fd(c.e):'مستمرة')),h('button',{class:'btn ghost',onclick:function(){P.cyc.splice(P.cyc.indexOf(c),1);save();render()}},'حذف')))});
+  if(!P.cyc.length)hist.append(h('div',{class:'row'},h('div',{class:'t muted'},'فارغ.')));
+  wrap.append(hist,h('div',{class:'form',style:'margin:10px 0'},h('button',{class:'btn ghost',onclick:function(){perOk=false;render()}},'قفل الآن')),
+    h('div',{class:'note'},'القفل يمنع الفتح العارض من التطبيق، وليس تشفيراً. التقدير تقريبي ولا يُغني عن الطبيب.'));
+  return wrap;
+}
+
+/* ---------- settings / drawer / placeholders ---------- */
+function settingsView(){
+  var wrap=h('div');
+  var th=h('select',{id:'thsel'},h('option',{value:'auto'},'تلقائي'),h('option',{value:'light'},'فاتح'),h('option',{value:'dark'},'مظلم'));th.value=S.theme;
+  th.addEventListener('change',function(){S.theme=th.value;applyTheme();save();render()});
+  var rest=h('input',{type:'checkbox',id:'restchk',checked:S.rest?true:null});
+  rest.addEventListener('change',function(){S.rest=rest.checked;save()});
+  function tf(id,label,key){var i=h('input',{type:'text',id:id,value:S[key]||''});i.addEventListener('change',function(){S[key]=i.value.trim();save()});return h('label',{class:'f',for:id},label,i)}
+  wrap.append(h('div',{class:'tier'},h('label',{class:'f',for:'thsel'},'المظهر',th),
+    h('div',{class:'switch'},h('label',{for:'restchk'},'وضع الراحة (يوقف عدّاد الصلاة)'),rest),
+    tf('r100','مكافأة 100%','reward100'),tf('r75','مكافأة 75%','reward75'),tf('cn','اسم رفيقتك','cname')));
+  var msg=h('div',{class:'muted',role:'status'});
+  var box=h('textarea',{id:'bk',style:'min-height:80px',placeholder:'للاستيراد: الصقي هنا نسخة البيانات ثم اضغطي «استيراد»','aria-label':'نسخة البيانات'});
+  var ex=h('button',{class:'btn ghost',type:'button'},'نسخ بياناتي');
+  ex.addEventListener('click',function(){
+    var txt=JSON.stringify(S);
+    var done=function(ok){msg.textContent=ok?'نُسخت بياناتك. الصقيها في مكان آمن (مثل ملاحظاتك).':'تعذّر النسخ التلقائي، ظهرت البيانات في المربع: حدّديها وانسخيها.';if(!ok){box.value=txt}};
+    try{navigator.clipboard.writeText(txt).then(function(){done(true)},function(){done(false)})}catch(e){done(false)}
+    try{var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'application/json'}));a.download='la-rose-backup.json';document.body.append(a);a.click();a.remove()}catch(e){}
+  });
+  var im=h('button',{class:'btn',type:'button'},'استيراد');
+  im.addEventListener('click',function(){
+    try{var o=JSON.parse(box.value);if(!o||typeof o!=='object'||!o.days)throw 0;
+      Object.keys(o).forEach(function(k){S[k]=o[k]});norm();save();msg.textContent='تم الاستيراد.';box.value='';render()}
+    catch(e){msg.textContent='النص ليس نسخة صالحة من بياناتك.'}
+  });
+  wrap.append(h('div',{class:'tier'},h('h3',{style:'margin-top:0'},'نسخة احتياطية'),
+    h('div',{class:'muted'},ref?'بياناتك محفوظة في حسابك على Claude.':'بياناتك محفوظة على هذا الهاتف فقط. انسخيها من وقت لآخر.'),
+    h('div',{class:'form',style:'margin:10px 0'},ex),box,h('div',{class:'form',style:'margin:8px 0'},im),msg));
+  wrap.append(h('div',{class:'note'},'الأقسام الجاهزة: اليوم، الأسبوعي، الإجمالي، Diary. باقي الأقسام تُبنى لاحقاً.'));
+  return wrap;
+}
+var SOON={
+  salam:['رحلة السلام','الأذكار والتسبيح، القرآن وقرعة السورة، الحديث الأسبوعي من الأربعين النووية، الصدقة بالقرعة، ورحلة طلب العلم'],
+  culture:['الثقافة','مجموعة واحدة كل شهر (تاريخ، فلسفة، علوم) مع المصادر وبطاقات المراجعة'],
+  health:['صحتي وجمالي','قرعة الغذاء كل سبت، أهداف Glow up، الماء، والدورة بقفل'],
+  academic:['الأكاديمي','نظام الأيام العادية ونظام الامتحان، الإنجليزي اليومي مع بطاقات أكسفورد A2'],
+  fun:['الترفيه','قوائم القراءة والمشاهدة، التجارب الفنية بقرعة ثلاث شهرياً'],
+  save:['الادخار والمصروف','أظرف الأسبوع بسقف لكل ظرف'],
+  wallet:['المحفظة','سجل شهري لكل ما أنجزتِه ومفكرتك الشهرية']
+};
+function soonView(v){var s=SOON[v]||['',''];return h('div',null,h('div',{class:'tier'},h('h3',{style:'margin-top:0'},s[0]),h('div',null,s[1]),h('div',{class:'muted',style:'margin-top:8px'},'هذا القسم لم يُبنَ بعد. نبنيه بعد أن تجرّبي النسخة الأولى.')),h('button',{class:'btn',onclick:function(){nav('today')}},'العودة لليوم'))}
+function drawerView(){
+  var close=function(){drawer=false;render()};
+  var go=function(v){return function(){nav(v)}};
+  var items=[['today','اليوم',1],['diary','Diary',1],['salam','رحلة السلام',1],['talab','رحلة طلب العلم',1],['culture','الثقافة'],['health','صحتي وجمالي',1],['academic','الأكاديمي'],['fun','الترفيه'],['save','الادخار'],['wallet','المحفظة'],['settings','الإعدادات',1]];
+  var d=h('nav',{class:'drawer','aria-label':'الأقسام'},h('h2',null,'La Rose'),items.map(function(x){return h('button',{class:'m',onclick:go(x[0])},x[1],x[2]?h('span',{class:'live'},'جاهز'):null)}));
+  var wrap=h('div');wrap.append(h('div',{class:'scrim',onclick:close}),d);return wrap;
+}
+
+/* ---------- boot ---------- */
+(function swipe(){var x0=null,y0=null;
+  document.addEventListener('touchstart',function(e){x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
+  document.addEventListener('touchend',function(e){if(x0==null)return;var dx=e.changedTouches[0].clientX-x0,dy=Math.abs(e.changedTouches[0].clientY-y0);
+    if(!drawer&&dx>80&&dy<50){drawer=true;render()}else if(drawer&&dx<-80&&dy<50){drawer=false;render()}x0=null},{passive:true});})();
+
+try{var ls=JSON.parse(localStorage.getItem('larose')||'null');if(ls)Object.keys(ls).forEach(function(k){S[k]=ls[k]})}catch(e){}
+norm();
+document.documentElement.lang='ar';document.documentElement.dir='rtl';
+applyTheme();render();
+var sp=document.getElementById('splash');
+function hideSplash(){sp.classList.add('off');setTimeout(function(){sp.remove()},700)}
+sp.addEventListener('click',hideSplash);setTimeout(hideSplash,1500);
+setInterval(function(){if(view==='today')render('tick')},30000);
+try{if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(function(){})}catch(e){}
+
+(async function(){
+  try{
+    var user=await claude.use('user'),db=await claude.use('db');
+    var uid=user&&await user.id();
+    if(db&&uid){
+      ref=db.doc('data/users/'+uid+'/state');
+      var snap=await ref.get();
+      if(snap.exists){var r=snap.data();Object.keys(r).forEach(function(k){S[k]=r[k]})}
+    }
+  }catch(e){}
+  norm();loaded=true;applyTheme();
+  try{sampleFn=await claude.use('sample')}catch(e){}
+  try{dict=await claude.use('dictation')}catch(e){}
+  if(ref)save();
+  render('tick');
+  if(view==='today'||view==='diary')render();
+})();
+})();
+</script>
+</body></html>
